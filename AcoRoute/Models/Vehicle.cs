@@ -10,7 +10,7 @@ namespace AcoRoute.Models
         public string Plate { get; set; }
         public string VehicleType { get; set; }
         public string Make { get; set; }
-        public int Model { get; set; }
+        public string Model { get; set; }
         public int Capacity { get; set; }
         public DateTime LastServiceDate { get; set; }
     }
