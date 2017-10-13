@@ -20,5 +20,9 @@ namespace AcoRoute.Models
         }
 
         public System.Data.Entity.DbSet<AcoRoute.Models.Vehicle> Vehicles { get; set; }
+
+        public System.Data.Entity.DbSet<AcoRoute.Models.Address> Addresses { get; set; }
+
+        public System.Data.Entity.DbSet<AcoRoute.Models.Person> People { get; set; }
     }
 }

@@ -1,0 +1,63 @@
+﻿@model IEnumerable<AcoRoute.Models.Person>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Surname)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DocumentType)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DocumentNumber)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.CellphoneNumber)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.WorkphoneNumber)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Surname)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DocumentType)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.DocumentNumber)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.CellphoneNumber)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.WorkphoneNumber)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.PersonId }) |
+            @Html.ActionLink("Details", "Details", new { id=item.PersonId }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.PersonId })
+        </td>
+    </tr>
+}
+
+</table>
