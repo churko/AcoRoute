@@ -46,7 +46,7 @@ namespace AcoRoute.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "PersonId,Surname,Name,DocumentType,DocumentNumber,StreetName,AddressNumber,FloorNumber,FlatNumber,City,Province,Latitude,Longitude,CellphoneNumber,WorkphoneNumber")] Person person)
+        public ActionResult Create([Bind(Include = "PersonId,Surname,Name,DocumentType,DocumentNumber,Address,Latitude,Longitude,CellphoneNumber,WorkphoneNumber")] Person person)
         {
             if (ModelState.IsValid)
             {
@@ -78,7 +78,7 @@ namespace AcoRoute.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "PersonId,Surname,Name,DocumentType,DocumentNumber,StreetName,AddressNumber,FloorNumber,FlatNumber,City,Province,Latitude,Longitude,CellphoneNumber,WorkphoneNumber")] Person person)
+        public ActionResult Edit([Bind(Include = "PersonId,Surname,Name,DocumentType,DocumentNumber,Address,Latitude,Longitude,CellphoneNumber,WorkphoneNumber")] Person person)
         {
             if (ModelState.IsValid)
             {
