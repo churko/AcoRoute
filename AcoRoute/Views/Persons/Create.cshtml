@@ -50,24 +50,28 @@
         <div class="form-group">
             @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control", @onblur = "codeAddress()" } })
+                @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control",
+                                                                                     @onblur = "findAddress('Address','Latitude','Longitude', " + 
+                                                                                               '"'+ "label[for= 'addressWarning']" + '"' + ")" 
+                                                                                    } 
+                                                            })
                 @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+                @Html.Label("addressWarning","Dirección no encontrada", new { @class = "bg-warning text-warning hidden"})
             </div>
         </div>
+        <div id="map" class="form-group" style="width: 600px; height: 500px"></div>
 
-        <div class="form-group">
+        <div class="form-group hidden">
             @Html.LabelFor(model => model.Latitude, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
-                @Html.EditorFor(model => model.Latitude, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Latitude, "", new { @class = "text-danger" })
+                @Html.EditorFor(model => model.Latitude, new { htmlAttributes = new { @class = "form-control" } })                
             </div>
         </div>
 
-        <div class="form-group">
+        <div class="form-group hidden">
             @Html.LabelFor(model => model.Longitude, htmlAttributes: new { @class = "control-label col-md-2" })
             <div class="col-md-10">
                 @Html.EditorFor(model => model.Longitude, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Longitude, "", new { @class = "text-danger" })
             </div>
         </div>
 
@@ -92,10 +96,7 @@
                 <input type="submit" value="Create" class="btn btn-default" />
             </div>
         </div>
-        
-        <div id="map" style="width: 600px; height: 500px"></div>
 
-        <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAGSks7j0iMTtI73uGsANMZ_G3cKQtRS9Q" type="text/javascript"></script>
         <script type="text/javascript" src="~/Scripts/maps.js"></script>
         <script type="text/javascript">
             createMap(15)
