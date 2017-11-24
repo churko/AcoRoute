@@ -1,4 +1,6 @@
-﻿var map;
+﻿/*map related*/
+
+var map;
 var initialPosition;
 var geocoder;
 
@@ -48,7 +50,7 @@ function findAddress(addressElement, latElement, lngElement, wrngElement = null)
                 $("#" + lngElement)[0].value = marker.position.lng();
             } else {
                 if (wrngElement) {
-                    $(wrngElement).removeClass("hidden")
+                    $(wrngElement).removeClass("hidden");
                 }
                 else {
                     alert('Geocode was not successful for the following reason: ' + status);
@@ -57,3 +59,14 @@ function findAddress(addressElement, latElement, lngElement, wrngElement = null)
         });
     }
 }
+/* /map related */
+
+/* not map related*/
+
+function hideElement(element) {
+    $(element).addClass("hidden");
+}
+
+
+
+/* /not map related */
