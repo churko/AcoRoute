@@ -6,77 +6,85 @@
 
 <h2>Details</h2>
 
-<div>
-    <h4>Person</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Surname)
-        </dt>
+<div class="form-horizontal container-fluid">
+    <div class="col-sm-6">
+        <h4>Person</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Surname)
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Surname)
-        </dd>
+            <dd>
+                @Html.DisplayFor(model => model.Surname)
+            </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
+            <dt>
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
+            <dd>
+                @Html.DisplayFor(model => model.Name)
+            </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.DocumentType)
-        </dt>
+            <dt>
+                @Html.DisplayNameFor(model => model.DocumentType)
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.DocumentType)
-        </dd>
+            <dd>
+                @Html.DisplayFor(model => model.DocumentType)
+            </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.DocumentNumber)
-        </dt>
+            <dt>
+                @Html.DisplayNameFor(model => model.DocumentNumber)
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.DocumentNumber)
-        </dd>
+            <dd>
+                @Html.DisplayFor(model => model.DocumentNumber)
+            </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Address)
-        </dt>
+            <dt>
+                @Html.DisplayNameFor(model => model.Address)
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Address)
-        </dd>
+            <dd>
+                @Html.DisplayFor(model => model.Address)
+            </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Longitude)
-        </dt>
+            <dt>
+                @Html.DisplayNameFor(model => model.CellphoneNumber)
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Longitude)
-        </dd>
+            <dd>
+                @Html.DisplayFor(model => model.CellphoneNumber)
+            </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.CellphoneNumber)
-        </dt>
+            <dt>
+                @Html.DisplayNameFor(model => model.WorkphoneNumber)
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.CellphoneNumber)
-        </dd>
+            <dd>
+                @Html.DisplayFor(model => model.WorkphoneNumber)
+            </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.WorkphoneNumber)
-        </dt>
+        </dl> 
+        <p>
+            @Html.EditorFor(model => model.Latitude, new { htmlAttributes = new { @class = "form-control hidden" } })
+            @Html.EditorFor(model => model.Longitude, new { htmlAttributes = new { @class = "form-control hidden" } })
+            @Html.ActionLink("Edit", "Edit", new { id = Model.PersonId }) |
+            @Html.ActionLink("Back to List", "Index")
+        </p>
+    </div>   
 
-        <dd>
-            @Html.DisplayFor(model => model.WorkphoneNumber)
-        </dd>
+    <div class="col-sm-6">
+        <div id="map" class="form-group" style="width: 600px; height: 500px"></div>
+        <script type="text/javascript" src="~/Scripts/maps.js"></script>
+        <script type="text/javascript">
 
-    </dl>
+                var point = createPoint($("#Latitude")[0].value, $("#Longitude")[0].value);
+                createMap(15, point, true);
+        </script>
+    </div>
+
 </div>
-<p>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.PersonId }) |
-    @Html.ActionLink("Back to List", "Index")
-</p>
+

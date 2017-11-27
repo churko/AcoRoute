@@ -51,15 +51,13 @@
             <div class="form-group">
                 @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label col-sm-4" })
                 <div class="col-sm-6">
-                    @Html.EditorFor(model => model.Address, new
-               {
-                   htmlAttributes = new
-                   {
-                       @class = "form-control",
-                       @onblur = "findAddress('Address','Latitude','Longitude', " + '"' + "label[for= 'addressWarning']" + '"' + ")",
-                       @onfocus = "hideElement(" + '"' + "label[for= 'addressWarning']" + '"' + ")"
-                   }
-               })
+                    @Html.EditorFor(model => model.Address, new {
+                        htmlAttributes = new {
+                            @class = "form-control",
+                            @onblur = "findAddress('Address','Latitude','Longitude', " + '"' + "label[for= 'addressWarning']" + '"' + ")",
+                            @onfocus = "hideElement(" + '"' + "label[for= 'addressWarning']" + '"' + ")"
+                        }
+                    })
                     @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
                     @Html.Label("addressWarning", "Dirección no encontrada", new { @class = "bg-warning text-warning hidden" })
                 </div>
@@ -100,7 +98,10 @@
                 <div class="col-sm-offset-2 col-sm-6">
                     <input type="submit" value="Create" class="btn btn-default" />
                 </div>
-            </div>            
+                <div>
+                    @Html.ActionLink("Back to List", "Index")
+                </div>
+            </div>               
         </div>
 
         
@@ -109,8 +110,7 @@
             <div id="map" class="form-group" style="width: 600px; height: 500px"></div>
             <script type="text/javascript" src="~/Scripts/maps.js"></script>
             <script type="text/javascript">
-                createMap(15)
-                centerMap(createPoint(-31.2528803, -61.4919196), 15)
+                createMap(15, createPoint(-31.2528803, -61.4919196), false)
             </script>
         </div> 
         
@@ -125,9 +125,7 @@
 
 }
 
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
+
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")

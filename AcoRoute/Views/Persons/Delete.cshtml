@@ -7,74 +7,91 @@
 <h2>Delete</h2>
 
 <h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Person</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Surname)
-        </dt>
+<div class="form-horizontal container-fluid">
+    <div class="col-sm-6">
+        <h4>Person</h4>
+        <hr />
+        <dl class="dl-horizontal">
+            <dt>
+                @Html.DisplayNameFor(model => model.Surname)
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Surname)
-        </dd>
+            <dd>
+                @Html.DisplayFor(model => model.Surname)
+            </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
+            <dt>
+                @Html.DisplayNameFor(model => model.Name)
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
+            <dd>
+                @Html.DisplayFor(model => model.Name)
+            </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.DocumentType)
-        </dt>
+            <dt>
+                @Html.DisplayNameFor(model => model.DocumentType)
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.DocumentType)
-        </dd>
+            <dd>
+                @Html.DisplayFor(model => model.DocumentType)
+            </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.DocumentNumber)
-        </dt>
+            <dt>
+                @Html.DisplayNameFor(model => model.DocumentNumber)
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.DocumentNumber)
-        </dd>
+            <dd>
+                @Html.DisplayFor(model => model.DocumentNumber)
+            </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Address)
-        </dt>
+            <dt>
+                @Html.DisplayNameFor(model => model.Address)
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Address)
-        </dd>
+            <dd>
+                @Html.DisplayFor(model => model.Address)
+            </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.CellphoneNumber)
-        </dt>
+            <dt>
+                @Html.DisplayNameFor(model => model.CellphoneNumber)
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.CellphoneNumber)
-        </dd>
+            <dd>
+                @Html.DisplayFor(model => model.CellphoneNumber)
+            </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.WorkphoneNumber)
-        </dt>
+            <dt>
+                @Html.DisplayNameFor(model => model.WorkphoneNumber)
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.WorkphoneNumber)
-        </dd>
+            <dd>
+                @Html.DisplayFor(model => model.WorkphoneNumber)
+            </dd>
 
-    </dl>
+        </dl>
 
-    @using (Html.BeginForm()) {
-        @Html.AntiForgeryToken()
+        @using (Html.BeginForm())
+        {
+            @Html.AntiForgeryToken()
 
-        <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
-        </div>
-    }
+            <div class="form-actions no-color">
+                @Html.EditorFor(model => model.Latitude, new { htmlAttributes = new { @class = "form-control hidden" } })
+                @Html.EditorFor(model => model.Longitude, new { htmlAttributes = new { @class = "form-control hidden" } })
+                <input type="submit" value="Delete" class="btn btn-default" /> |
+                @Html.ActionLink("Back to List", "Index")
+            </div>
+
+            
+        }        
+    </div>
+
+    <div class="col-sm-6">
+        <div id="map" class="form-group" style="width: 600px; height: 500px"></div>
+        <script type="text/javascript" src="~/Scripts/maps.js"></script>
+        <script type="text/javascript">
+
+                var point = createPoint($("#Latitude")[0].value, $("#Longitude")[0].value);
+                createMap(15, point, true);
+        </script>
+    </div>
 </div>

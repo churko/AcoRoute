@@ -1,12 +1,13 @@
 ﻿/*map related*/
 
 var map;
-var initialPosition;
 var geocoder;
+var addressMarker;
+var routeMarkers = [];
 
-function createMap(initialZoom) {
+function createMap(initialZoom, initialPosition, addMarker = false) {
 
-    initialPosition = new google.maps.LatLng(0, 0);
+
     geocoder = new google.maps.Geocoder();
 
     var mapOptions = {
@@ -21,9 +22,14 @@ function createMap(initialZoom) {
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
 
+    map = new google.maps.Map(document.getElementById("map"), mapOptions);
+
+    if (addMarker) {
+        addAddressMarker(initialPosition);
+    }
 
     //se crea el mapa
-    map = new google.maps.Map(document.getElementById("map"), mapOptions);
+    
 }
 
 function createPoint(lat, lng) {
@@ -37,17 +43,22 @@ function centerMap(point, zoom) {
 
 function findAddress(addressElement, latElement, lngElement, wrngElement = null) {
     //var address = document.getElementById('Address').value;
+    if (addressMarker) {
+        addressMarker.SetMap(null);
+        addressMarker = null;
+    }
+
     var address = $("#" + addressElement)[0].value
     if (address) {
         geocoder.geocode({ 'address': address }, function (results, status) {
             if (status == google.maps.GeocoderStatus.OK) {
                 map.setCenter(results[0].geometry.location);
-                var marker = new google.maps.Marker({
+                addressMarker = new google.maps.Marker({
                     map: map,
                     position: results[0].geometry.location
                 });
-                $("#" + latElement)[0].value = marker.position.lat();
-                $("#" + lngElement)[0].value = marker.position.lng();
+                $("#" + latElement)[0].value = addressMarker.position.lat();
+                $("#" + lngElement)[0].value = addressMarker.position.lng();
             } else {
                 if (wrngElement) {
                     $(wrngElement).removeClass("hidden");
@@ -59,6 +70,33 @@ function findAddress(addressElement, latElement, lngElement, wrngElement = null)
         });
     }
 }
+
+function addAddressMarker(point) {
+    addressMarker = new google.maps.Marker({
+        map: map,
+        position: point
+    });
+    map.setCenter(point);
+}
+
+
+function addRouteMarker(point) {
+    routeMarkers.push(new google.maps.Marker({
+        map: map,
+        position: point
+    }));
+    map.setCenter(point);
+}
+
+function deleteRouteMarkers() {
+    if (routeMarkers.length > 0) {
+        for (i in routeMarkers) {
+            routeMarkers[i].setMap(null);            
+        }
+        routeMarkers = [];
+    }
+}
+
 /* /map related */
 
 /* not map related*/
