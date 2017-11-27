@@ -11,8 +11,8 @@ namespace AcoRoute.Models
         public string DocumentType { get; set; }
         public int DocumentNumber { get; set; }
         public string Address { get; set; }
-        public float Latitude { get; set; }
-        public float Longitude { get; set; }
+        public string Latitude { get; set; }
+        public string Longitude { get; set; }
         public int CellphoneNumber { get; set; }
         public int WorkphoneNumber { get; set; }
     }

@@ -67,6 +67,12 @@ function hideElement(element) {
     $(element).addClass("hidden");
 }
 
-
+function showAlert(title,message) {
+    bootbox.alert({
+        size: "small",
+        title: title,
+        message: message
+    })
+}
 
 /* /not map related */

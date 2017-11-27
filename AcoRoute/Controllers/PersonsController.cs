@@ -48,13 +48,13 @@ namespace AcoRoute.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult Create([Bind(Include = "PersonId,Surname,Name,DocumentType,DocumentNumber,Address,Latitude,Longitude,CellphoneNumber,WorkphoneNumber")] Person person)
         {
+            ViewBag.ValidModel = ModelState.IsValid;
             if (ModelState.IsValid)
-            {
+            {               
                 db.People.Add(person);
                 db.SaveChanges();
                 return RedirectToAction("Index");
             }
-
             return View(person);
         }
 
