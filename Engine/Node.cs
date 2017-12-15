@@ -10,6 +10,7 @@ namespace Engine
 
         public Node(decimal[] coord)
         {
+            //transforms the latitude and longitude into integer numbers
             var correction = Convert.ToInt32(Math.Pow(10, 7));
             this.lat = Convert.ToInt32(coord[0] * correction);
             this.lng = Convert.ToInt32(coord[1] * correction);
