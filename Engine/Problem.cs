@@ -68,7 +68,7 @@ namespace Engine
                 {
                     //builds the arcs for the graph
                     var arcPoints = new Node[] { initNode, endNode };
-                    var arc = new Arc(arcPoints, this.initialPheromone);
+                    var arc = new Arc(arcPoints, this.initialPheromone, this.qProbability);
                     arcInfo.Add(arcPoints, arc);
 
                     //adds the node and distance to search for the nearest neighbours of initNode
@@ -145,6 +145,7 @@ namespace Engine
                 foreach (var ant in antColony)
                 {
                     ant.FindNextNode(this.arcInfo, this.nearestNodes);
+                    //TODO termine aca
                 }
             }
             
