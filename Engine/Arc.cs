@@ -8,13 +8,11 @@ namespace Engine
     {
         readonly int distance;
 
-        double pheromone;
+        decimal pheromone;
 
-        double choiceInfo;
+        decimal choiceInfo;
 
-        double beta;
-
-        public Arc (Node[] arcNodes, double initPheromone)
+        public Arc (Node[] arcNodes, decimal initPheromone)
         {
             //calculates manhattan distance between the nodes
             var latDist = Math.Abs(arcNodes[0].Lat - arcNodes[1].Lat);
@@ -23,13 +21,13 @@ namespace Engine
 
             this.pheromone = initPheromone;
 
-            this.choiceInfo = ;
+            this.choiceInfo = 0;
         }
 
         public int Distance => distance;
 
-        public double Pheromone { get => pheromone; set => pheromone = value; }
-        public double ChoiceInfo { get => choiceInfo; set => choiceInfo = value; }
+        public decimal Pheromone { get => pheromone; set => pheromone = value; }
+        public decimal ChoiceInfo { get => choiceInfo; set => choiceInfo = value; }
 
         
     }

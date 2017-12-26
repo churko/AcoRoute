@@ -8,7 +8,7 @@ namespace Engine
 
         readonly int lng;
 
-        public Node(double[] coord)
+        public Node(decimal[] coord)
         {
             //transforms the latitude and longitude into integer numbers
             var correction = Convert.ToInt32(Math.Pow(10, 7));
