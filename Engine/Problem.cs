@@ -21,13 +21,7 @@ namespace Engine
 
         int colonySize;
 
-        int iterations;
-
-        Dictionary<List<Node>, int> bestSoFar;
-
-        //constructor: initializes the problem parameters
-        public Problem(decimal[][] points, decimal[] startingPoint, int colonySize = 30, int nearNodes = 5, decimal initPheromone = 1, 
-            int iterations = 50, decimal[] endPoint = null)
+        public Problem(decimal[][] points, decimal[] startingPoint, int colonySize = 30, int nearNodes = 5, decimal initPheromone = 1, decimal[] endPoint = null)
         {
             //Converts the points passed as arrays into nodes
             foreach (decimal[] point in points)
@@ -63,13 +57,13 @@ namespace Engine
                 this.nearestNodes.Add(initNode, nearestNeighbours);
             }
 
-            //initializes the number of iterations
-            this.iterations = iterations;
         }
 
-        //starts the search
         public List<Node> FindRoute()
         {
+
+
+
             List<Node> tour = new List<Node>();
             return tour;
         }
