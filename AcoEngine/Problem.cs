@@ -123,7 +123,7 @@ namespace AcoEngine
         }
 
         //starts the search
-        public double[][] FindRoute()
+        public int[][] FindRoute()
         {
             for (var i = 0; i < this.iterations; i++)
             {
@@ -133,7 +133,7 @@ namespace AcoEngine
                 this.UpdatePheromone();
             }
 
-            double[][] finalRoute = null;
+            int[][] finalRoute = null;
             return finalRoute;
         }
 
