@@ -23,7 +23,6 @@ namespace Engine
 
         public Problem(decimal[][] points, decimal[] startingPoint, int colonySize = 30, int nearNodes = 5, decimal initPheromone = 1, decimal[] endPoint = null)
         {
-            //Converts the points passed as arrays into nodes
             foreach (decimal[] point in points)
             {
                 nodes.Add(new Node(point));
@@ -35,25 +34,23 @@ namespace Engine
 
                 foreach (var endNode in nodes.Where(n => n != initNode))
                 {
-                    //builds the arcs for the graph
                     var arcPoints = new Node[] { initNode, endNode };
-                    var arc = new Arc(arcPoints, initPheromone);          
-                    arcInfo.Add(arcPoints , arc);
+                    var arc = new Arc(arcPoints, initPheromone);
+                    
 
-                    //adds the node and distance to search for the nearest neighbours of initNode
+                    arcInfo.Add(arcPoints , arc);
                     nearestNodes.Add(new KeyValuePair<Node, int>(endNode, arc.Distance));
                 }
 
-                //get the (nearNodes)nth nodes with the shortest distance to initNodes
                 nearestNodes.Sort((x, y) => x.Value.CompareTo(y.Value));
                 nearestNodes.Take(nearNodes);
 
-                //builds the nearestNodes dictionary
                 var nearestNeighbours = new List<Node>();
                 foreach (var node in nearestNodes)
                 {
                     nearestNeighbours.Add(node.Key);
                 }
+
                 this.nearestNodes.Add(initNode, nearestNeighbours);
             }
 
