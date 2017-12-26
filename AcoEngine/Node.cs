@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Engine
+namespace AcoEngine
 {
     public struct Node
     {
