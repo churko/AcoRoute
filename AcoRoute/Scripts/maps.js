@@ -44,7 +44,7 @@ function centerMap(point, zoom) {
 function findAddress(addressElement, latElement, lngElement, wrngElement = null) {
     //var address = document.getElementById('Address').value;
     if (addressMarker) {
-        addressMarker.setMap(null);
+        addressMarker.SetMap(null);
         addressMarker = null;
     }
 
