@@ -30,28 +30,11 @@ namespace Engine
 
             foreach (var initNode in nodes)
             {
-                var nearestNodes = new List<KeyValuePair<Node, int>>();
-
                 foreach (var endNode in nodes.Where(n => n != initNode))
                 {
-                    var arcPoints = new Node[] { initNode, endNode };
-                    var arc = new Arc(arcPoints, initPheromone);
-                    
-
-                    arcInfo.Add(arcPoints , arc);
-                    nearestNodes.Add(new KeyValuePair<Node, int>(endNode, arc.Distance));
+                    Node[] arcPoints = new Node[] { initNode, endNode };
+                    arcInfo.Add(arcPoints , new Arc(arcPoints, initPheromone));
                 }
-
-                nearestNodes.Sort((x, y) => x.Value.CompareTo(y.Value));
-                nearestNodes.Take(nearNodes);
-
-                var nearestNeighbours = new List<Node>();
-                foreach (var node in nearestNodes)
-                {
-                    nearestNeighbours.Add(node.Key);
-                }
-
-                this.nearestNodes.Add(initNode, nearestNeighbours);
             }
 
         }
