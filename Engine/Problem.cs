@@ -24,8 +24,8 @@ namespace Engine
         
 
         //constructor: initializes the problem parameters
-        public Problem(int[][] points, int[] startingPoint, int colonySize = 30, int nnCount = 5,
-            int iterations = 50, double heuristicsWeight = 2, double qProbability = 0.1 , int[] endPoint = null)
+        public Problem(double[][] points, double[] startingPoint, int colonySize = 30, int nnCount = 5,
+            int iterations = 50, double heuristicsWeight = 2, double qProbability = 0.1 , double[] endPoint = null)
         {
             //initializes the number of iterations
             this.iterations = iterations;
@@ -64,7 +64,7 @@ namespace Engine
             {
                 var nearestNodes = new List<KeyValuePair<Node, int>>();
 
-                foreach (var endNode in nodes.Where(n => !n.Equals(initNode)))
+                foreach (var endNode in nodes.Where(n => n != initNode))
                 {
                     //builds the arcs for the graph
                     var arcPoints = new Node[] { initNode, endNode };

@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcoRoute", "AcoRoute\AcoRou
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcoRoute.Tests", "AcoRoute.Tests\AcoRoute.Tests.csproj", "{26995478-85DB-4303-BD70-AB0F3F7C233F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AcoEngine", "AcoEngine\AcoEngine.csproj", "{4BB268F1-01C1-45DB-BCD2-5464385E9634}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine", "Engine\Engine.csproj", "{A9ABD9E7-E270-4F11-B1DD-70D3F2C026F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{26995478-85DB-4303-BD70-AB0F3F7C233F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26995478-85DB-4303-BD70-AB0F3F7C233F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{26995478-85DB-4303-BD70-AB0F3F7C233F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4BB268F1-01C1-45DB-BCD2-5464385E9634}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4BB268F1-01C1-45DB-BCD2-5464385E9634}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4BB268F1-01C1-45DB-BCD2-5464385E9634}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4BB268F1-01C1-45DB-BCD2-5464385E9634}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9ABD9E7-E270-4F11-B1DD-70D3F2C026F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9ABD9E7-E270-4F11-B1DD-70D3F2C026F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9ABD9E7-E270-4F11-B1DD-70D3F2C026F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9ABD9E7-E270-4F11-B1DD-70D3F2C026F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
