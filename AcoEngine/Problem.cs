@@ -9,7 +9,7 @@ namespace AcoEngine
     public class Problem
     {
         List<Node> nodes;
-        Dictionary<Node[], Arc> arcInfo;
+        Dictionary<Node[], Arc> arcsInfo;
         int nnCount;
         Dictionary<Node, List<Node>> nearestNodes;
         Node startingNode;
@@ -65,12 +65,12 @@ namespace AcoEngine
             {
                 var nearestNodes = new List<KeyValuePair<Node, int>>();
 
-                foreach (var endNode in nodes.Where(n => !n.Equals(initNode)))
+                foreach (var endNode in nodes.Where(n => n.Lat != initNode.Lat || n.Lng != initNode.Lng))
                 {
                     //builds the arcs for the graph
                     var arcPoints = new Node[] { initNode, endNode };
                     var arc = new Arc(arcPoints, this.initialPheromone, this.qProbability);
-                    arcInfo.Add(arcPoints, arc);
+                    arcsInfo.Add(arcPoints, arc);
 
                     //adds the node and distance to search for the nearest neighbours of initNode
                     nearestNodes.Add(new KeyValuePair<Node, int>(endNode, arc.Distance));
@@ -108,15 +108,15 @@ namespace AcoEngine
             tour.Add(nextNode);
             for (var i = 1; i < this.routeLength; i++)
             {
-                var pairs = this.nodes.Where(node => !tour.Contains(node)).Select(node => new Node[] { nextNode, node }).ToList(); //TODO check if this where works
-                var nodeArcs = this.arcInfo.Where(x => pairs.Contains(x.Key)).ToDictionary(x => x.Key[1], x => x.Value.Distance).ToList();
+                var pairs = this.nodes.Where(node => !tour.Any(tNode => tNode.Lat == node.Lat && tNode.Lng == node.Lng)).Select(node => new Node[] { nextNode, node }).ToList(); 
+                var nodeArcs = this.arcsInfo.Where(x => pairs.Contains(x.Key)).ToDictionary(x => x.Key[1], x => x.Value.Distance).ToList(); //TODO check if this where works
                 nodeArcs.Sort((x, y) => x.Value.CompareTo(y.Value));
                 nextNode = nodeArcs[0].Key;
                 nnDistance += nodeArcs[0].Value;
                 tour.Add(nextNode);
             }
 
-            nnDistance += this.arcInfo[new Node[] { nextNode, this.startingNode }].Distance;
+            nnDistance += this.arcsInfo[new Node[] { nextNode, this.startingNode }].Distance;
 
             this.initialPheromone = 1 / (this.routeLength * nnDistance);
 
@@ -145,7 +145,7 @@ namespace AcoEngine
             {
                 foreach (var ant in antColony)
                 {
-                    ant.FindNextNode(this.arcInfo, this.nearestNodes);
+                    ant.FindNextNode(this.arcsInfo, this.nearestNodes);
                     //TODO termine aca
                 }
             }
