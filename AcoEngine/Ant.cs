@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace AcoEngine
 {
     public class Ant
     {
-        static int aId;
+        static int nextId;
 
-        private int id;
-        public int Id => id;
+        public int AntId { get; private set; }
 
         private List<Node> nodes;
 
@@ -19,11 +19,10 @@ namespace AcoEngine
         private List<Node> route;
         private void AddNodeToRoute(Node node, int distance)
         {
-            this.id = aId;
+            this.AntId = Interlocked.Increment(ref nextId);
             this.routeLength += distance;
             this.route.Add(node);
             this.nodes.Remove(node);
-            aId++;
         }
 
         public List<Node> ShowRoute()
