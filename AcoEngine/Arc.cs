@@ -16,9 +16,13 @@ namespace AcoEngine
 
         double qProbability;
 
+        public int InitNodeId { get; }
+        public int EndNodeId { get; }
 
         public Arc(Node[] arcNodes, double initPheromone, double qProbability)
         {
+            this.InitNodeId = arcNodes[0].NodeId;
+            this.EndNodeId = arcNodes[1].NodeId;
             //calculates manhattan distance between the nodes
             var latDist = Math.Abs(arcNodes[0].Lat - arcNodes[1].Lat);
             var lngDist = Math.Abs(arcNodes[0].Lng - arcNodes[1].Lng);
