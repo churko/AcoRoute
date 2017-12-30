@@ -11,49 +11,79 @@ namespace AcoEngine
 
         public int AntId { get; private set; }
 
-        private List<Node> nodes;
+        private Dictionary<int,Node> nodes;
 
         private int routeLength;
         public int RouteLength => routeLength; 
 
-        private List<Node> route;
+        private List<int> route;
         private void AddNodeToRoute(Node node, int distance)
         {
             this.AntId = Interlocked.Increment(ref nextId);
             this.routeLength += distance;
-            this.route.Add(node);
-            this.nodes.Remove(node);
+            this.route.Add(node.NodeId);
+            this.nodes.Remove(node.NodeId);
         }
 
-        public List<Node> ShowRoute()
+        private void AddNodeToRoute(int nodeId, int distance)
+        {
+            this.AntId = Interlocked.Increment(ref nextId);
+            this.routeLength += distance;
+            this.route.Add(nodeId);
+            this.nodes.Remove(nodeId);
+        }
+
+        public List<int> ShowRoute()
         {
             return this.route;
         }
 
-        public Ant(List<Node> nodes)
+        public Ant(Dictionary<int,Node> nodes)
         {
             this.routeLength = 0;
             this.nodes = nodes;
             this.SetFirstNode(this.nodes);
         }
 
-        private void SetFirstNode(List<Node> nodes)
+        private void SetFirstNode(Dictionary<int,Node> nodes)
         {
             Random rnd = new Random();
             var firstNode = nodes[rnd.Next(nodes.Count - 1)];
             this.AddNodeToRoute(firstNode, 0);
         }
 
-        public void FindNextNode(Dictionary<Node[], Arc> arcsInfo, Dictionary<Node, List<Node>> nearestNodes)
+        public void FindNextNode(List<Arc> arcsInfo, Dictionary<int, List<Node>> nearestNodes)
         {
+            int nextNodeId;
             var lastNode = this.route.Last();
             var lastNodeNN = nearestNodes[lastNode];
-            var validNN = lastNodeNN.Where(node => !this.route.Any(rNode => rNode.Lat == node.Lat && rNode.Lng == node.Lng)).ToList();
+            var validNN = lastNodeNN.Where(node => !this.route.Any(rNodeId => rNodeId == node.NodeId)).Select(x=> x.NodeId).ToList();
             if (validNN.Count() > 0)
             {
-                var nnKeys = validNN.Select(x => new Node[] { lastNode, x }).ToList();
-                var nnArcs = nnKeys.Where(k => arcsInfo.ContainsKey(k)).ToDictionary(k=> k[1],x=>arcsInfo[x]);
-                
+                var validArcs = arcsInfo.Where(arc => arc.InitNodeId == lastNode && validNN.Any(x => x == arc.EndNodeId )).OrderBy(x => x.ChoiceInfo).ToList();
+                var totalChoiceInfo = validArcs.Sum(x => x.ChoiceInfo);                
+                double selectionProbability = 0;
+                double rnd = Problem.GetRandomNumber(0, totalChoiceInfo);
+                foreach(var arc in validArcs)
+                {
+                    if (selectionProbability < rnd)
+                    {
+                        nextNodeId = arc.EndNodeId;
+                        selectionProbability += selectionProbability; 
+                    }
+                    else
+                    {
+                        break;
+                    }
+                }
+
+
+                //var arcProb = arcsInfo.Where(arc => validNN.Any(nNodeId => arc.EndNodeId == nNodeId)).OrderBy(x=>x.ChoiceInfo).ToDictionary(x => x.EndNodeId, x => x.ChoiceInfo);
+
+            }
+            else
+            {
+                //todo que hacer si no hay mas disponibilidad de nearest neighbour
             }
         }
 

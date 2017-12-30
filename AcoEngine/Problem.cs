@@ -8,10 +8,10 @@ namespace AcoEngine
 {
     public class Problem
     {
-        List<Node> nodes;
+        Dictionary<int,Node> nodes;
         List<Arc> arcsInfo = new List<Arc>();
         int nnCount;
-        Dictionary<Node, List<Node>> nearestNodes = new Dictionary<Node, List<Node>>();
+        Dictionary<int, List<int>> nearestNodes = new Dictionary<int, List<int>>();
         Node startingNode;
         Node endNode;
         int colonySize;
@@ -19,7 +19,7 @@ namespace AcoEngine
         BestSoFar bestSoFar;
         double initialPheromone;
         int routeLength;
-        double heuristicsWeigth;
+        double heuristicsWeight;
         double qProbability;
 
 
@@ -49,7 +49,7 @@ namespace AcoEngine
             this.iterations = iterations;
 
             //Converts the points passed as arrays into nodes
-            this.nodes = points.Select(x => new Node(x)).ToList();
+            this.nodes = points.Select(x => new Node(x)).ToDictionary(x => x.NodeId, x => x);
             this.routeLength = this.nodes.Count;
 
             //initializes colony size
@@ -59,7 +59,7 @@ namespace AcoEngine
             this.nnCount = nnCount < this.routeLength  ? nnCount : this.routeLength - 1;
 
             //initializes the heuristicsWeight
-            this.heuristicsWeigth = heuristicsWeight;
+            this.heuristicsWeight = heuristicsWeight;
 
             this.SetStartingNode(startingPoint);
 
@@ -77,7 +77,7 @@ namespace AcoEngine
                 //TODO devolver error de lista de nodos vacia
             }
 
-            this.startingNode = nodes.Where(x => x.Lat == startingPoint[0] && x.Lng == startingPoint[1]).FirstOrDefault();
+            this.startingNode = nodes.Where(x => x.Value.Lat == startingPoint[0] && x.Value.Lng == startingPoint[1]).FirstOrDefault().Value;
 
             if (this.startingNode.NodeId < 1)
             {
@@ -89,18 +89,18 @@ namespace AcoEngine
         {
             foreach (var initNode in nodes)
             {
-                var nearestNodes = new List<KeyValuePair<Node, int>>();
+                var nearestNodes = new List<KeyValuePair<int, int>>();
 
-                foreach (var endNode in nodes.Where(currNode => currNode.NodeId != initNode.NodeId ))
+                foreach (var endNode in nodes.Where(currNode => currNode.Value.NodeId != initNode.Value.NodeId ))
                 {
                     //builds the arcs for the graph
-                    var arcNodes = new Node[] { initNode, endNode };
-                    var arcNodesIds = new int[2] { initNode.NodeId, endNode.NodeId };
-                    var arc = new Arc(arcNodes, this.initialPheromone, this.qProbability);
-                    arcsInfo.Add(arc);
+                    var arcNodes = new Node[] { initNode.Value, endNode.Value };
+                    //var arcNodesIds = new int[2] { initNode.Key, endNode.Key };
+                    var arc = new Arc(arcNodes, this.initialPheromone, this.heuristicsWeight);
+                    this.arcsInfo.Add(arc);
 
                     //adds the node and distance to search for the nearest neighbours of initNode
-                    nearestNodes.Add(new KeyValuePair<Node, int>(endNode, arc.Distance));
+                    nearestNodes.Add(new KeyValuePair<int, int>(endNode.Key, arc.Distance));
                 }
 
                 //get the (nnCount)nth nodes with the shortest distance to initNodes
@@ -108,25 +108,15 @@ namespace AcoEngine
                 nearestNodes.Take(this.nnCount);
 
                 //builds the nearestNodes dictionary
-                //var nearestNeighbours = new List<Node>();
-                //foreach (var node in nearestNodes)
-                //{
-                //    nearestNeighbours.Add(node.Key);
-                //}
-                //this.nearestNodes.Add(initNode, nearestNeighbours);
-
-                //builds the nearestNodes dictionary
-                var nearestNeighbours = new List<Node>();
+                var nearestNeighbours = new List<int>();
                 nearestNeighbours = Enumerable.Range(0, this.nnCount).Select(x => nearestNodes[x].Key).ToList();
-                this.nearestNodes.Add(initNode, nearestNeighbours);
+                this.nearestNodes.Add(initNode.Key, nearestNeighbours);
             }
         }
 
         private void InitializePheromone()
         {
-            var nodeAux = new Node[this.routeLength];
-            this.nodes.CopyTo(nodeAux);
-            var initialNodes = nodeAux.ToList();
+            var initialNodes = this.nodes.Select(x => x.Value).ToArray();
 
             var tour = new List<Node>();
             var nnDistance = 0;
@@ -135,10 +125,9 @@ namespace AcoEngine
             tour.Add(nextNode);
             for (var i = 1; i < this.routeLength; i++)
             {
-                var pairs = this.nodes.Where(currNode => !tour.Any(tNode => tNode.NodeId == currNode.NodeId)).Select(currNode => new Node[] { nextNode, currNode }).ToList();
-                //var nodeArcs = this.arcsInfo.Where(x => pairs.Contains(x.Key)).ToDictionary(x => x.Key[1], x => x.Value.Distance).ToList(); //TODO check if this where works
+                var pairs = this.nodes.Where(currNode => !tour.Any(tNode => tNode.NodeId == currNode.Key)).Select(currNode => new Node[] { nextNode, currNode.Value }).ToList();
                 var nodeArcs = this.arcsInfo.Where(x => pairs.Any(pNode => pNode[0].NodeId == x.InitNodeId && pNode[1].NodeId == x.EndNodeId)).OrderBy(o => o.Distance).ToList();
-                nextNode = this.nodes.Where(x => x.NodeId == nodeArcs[0].EndNodeId).FirstOrDefault();
+                nextNode = this.nodes[nodeArcs[0].EndNodeId];
                 nnDistance += nodeArcs[0].Distance;
                 tour.Add(nextNode);
             }
@@ -159,7 +148,7 @@ namespace AcoEngine
                 this.UpdatePheromone();
             }
 
-            int[][] finalRoute = null;
+            int[][] finalRoute = new int[1][] { new int[2] { 2, 4 } };
             return finalRoute;
         }
 
@@ -197,6 +186,12 @@ namespace AcoEngine
         }
 
         #region Useful but probably unused
+        public static double GetRandomNumber(double minimum, double maximum)
+        {
+            Random random = new Random();
+            return random.NextDouble() * (maximum - minimum) + minimum;
+        }
+
         private bool ValidatePoints(int[] point)
         {
             if(point.GetLength(0) != 2)

@@ -16,7 +16,9 @@ namespace AcoConsole
 
             int[] startingPoint = points[0];
 
-            var Problem = new Problem(points, startingPoint);
+            var problem = new Problem(points, startingPoint);
+
+            var rnd = Problem.GetRandomNumber(0, 12.5);
             
 
             Console.WriteLine("enter to exit");

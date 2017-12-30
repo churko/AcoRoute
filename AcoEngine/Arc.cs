@@ -14,12 +14,12 @@ namespace AcoEngine
 
         double choiceInfo;
 
-        double qProbability;
+        double heuristicWeightInP;
 
         public int InitNodeId { get; }
         public int EndNodeId { get; }
 
-        public Arc(Node[] arcNodes, double initPheromone, double qProbability)
+        public Arc(Node[] arcNodes, double initPheromone, double heuristicWeight)
         {
             this.InitNodeId = arcNodes[0].NodeId;
             this.EndNodeId = arcNodes[1].NodeId;
@@ -30,9 +30,10 @@ namespace AcoEngine
 
             this.pheromone = initPheromone;
 
-            this.choiceInfo = this.pheromone * (1 / distance);
+            this.heuristicWeightInP = Math.Pow((1 / this.distance), heuristicWeight);
 
-            this.qProbability = qProbability;
+            this.UpdateChoiceInfo();
+
         }
 
         public int Distance => distance;
@@ -42,7 +43,7 @@ namespace AcoEngine
 
         public void UpdateChoiceInfo()
         {
-            this.choiceInfo = this.pheromone * Math.Pow((1 / this.distance), this.qProbability);
+            this.choiceInfo = this.pheromone * this.heuristicWeightInP;
         }
 
 
