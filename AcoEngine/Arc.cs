@@ -8,9 +8,9 @@ namespace AcoEngine
 {
     public class Arc
     {
-        readonly int distance;
+        readonly double distance;
 
-        double pheromone;
+        double pheromone = 0;
 
         double choiceInfo;
 
@@ -19,7 +19,7 @@ namespace AcoEngine
         public int InitNodeId { get; }
         public int EndNodeId { get; }
 
-        public Arc(Node[] arcNodes, double initPheromone, double heuristicWeight)
+        public Arc(Node[] arcNodes, double heuristicWeight)
         {
             this.InitNodeId = arcNodes[0].NodeId;
             this.EndNodeId = arcNodes[1].NodeId;
@@ -28,17 +28,24 @@ namespace AcoEngine
             var lngDist = Math.Abs(arcNodes[0].Lng - arcNodes[1].Lng);
             this.distance = lngDist + latDist;
 
-            this.pheromone = initPheromone;
-
-            this.heuristicWeightInP = Math.Pow((1 / this.distance), heuristicWeight);
-
-            this.UpdateChoiceInfo();
+            this.heuristicWeightInP = Math.Pow(((double)1 / this.distance), heuristicWeight);
 
         }
 
-        public int Distance => distance;
+        public double Distance => distance;
 
-        public double Pheromone { get => pheromone; set => pheromone = value; }
+        public double Pheromone {
+            get
+            {
+                return this.pheromone;
+            }
+            set
+            {
+                this.pheromone = value;
+                this.UpdateChoiceInfo();
+            }
+        }
+
         public double ChoiceInfo { get => choiceInfo; }
 
         public void UpdateChoiceInfo()

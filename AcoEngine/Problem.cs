@@ -22,6 +22,7 @@ namespace AcoEngine
         double heuristicsWeight;
         double qProbability;
 
+        static Random random = new Random();
 
 
         //constructor: initializes the problem parameters
@@ -89,18 +90,18 @@ namespace AcoEngine
         {
             foreach (var initNode in nodes)
             {
-                var nearestNodes = new List<KeyValuePair<int, int>>();
+                var nearestNodes = new List<KeyValuePair<int, double>>();
 
                 foreach (var endNode in nodes.Where(currNode => currNode.Value.NodeId != initNode.Value.NodeId ))
                 {
                     //builds the arcs for the graph
                     var arcNodes = new Node[] { initNode.Value, endNode.Value };
                     //var arcNodesIds = new int[2] { initNode.Key, endNode.Key };
-                    var arc = new Arc(arcNodes, this.initialPheromone, this.heuristicsWeight);
+                    var arc = new Arc(arcNodes, this.heuristicsWeight);
                     this.arcsInfo.Add(arc);
 
                     //adds the node and distance to search for the nearest neighbours of initNode
-                    nearestNodes.Add(new KeyValuePair<int, int>(endNode.Key, arc.Distance));
+                    nearestNodes.Add(new KeyValuePair<int, double>(endNode.Key, arc.Distance));
                 }
 
                 //get the (nnCount)nth nodes with the shortest distance to initNodes
@@ -119,7 +120,7 @@ namespace AcoEngine
             var initialNodes = this.nodes.Select(x => x.Value).ToArray();
 
             var tour = new List<Node>();
-            var nnDistance = 0;
+            var nnDistance = (double)0;
 
             var nextNode = this.startingNode; 
             tour.Add(nextNode);
@@ -135,6 +136,8 @@ namespace AcoEngine
 
             this.initialPheromone = Convert.ToDouble(1) / Convert.ToDouble(this.routeLength * nnDistance);
 
+            this.arcsInfo.ForEach(x => x.Pheromone = this.initialPheromone);
+
         }
 
         //starts the search
@@ -143,9 +146,9 @@ namespace AcoEngine
             for (var i = 0; i < this.iterations; i++)
             {
                 this.bestSoFar = this.ContructSolutions();
-                this.bestSoFar = this.TwoOpt();
-                this.UpdateStats(i);
-                this.UpdatePheromone();
+                //this.bestSoFar = this.TwoOpt();
+                //this.UpdateStats(i);
+                //this.UpdatePheromone();
             }
 
             int[][] finalRoute = new int[1][] { new int[2] { 2, 4 } };
@@ -154,13 +157,13 @@ namespace AcoEngine
 
         private BestSoFar ContructSolutions()
         {
-            List<Ant> antColony = Enumerable.Range(0, this.colonySize).Select(x => new Ant(this.nodes)).ToList();
+            List<Ant> antColony = Enumerable.Range(0, this.colonySize).Select(x => new Ant(this.nodes)).ToList();           
 
             for (var i = 0; i < this.nodes.Count; i++)
             {
                 foreach (var ant in antColony)
                 {
-                    //ant.FindNextNode(this.arcsInfo, this.nearestNodes);
+                    ant.FindNextNode(this.arcsInfo, this.nearestNodes, this.qProbability);
                     //TODO termine aca
                 }
             }
@@ -185,12 +188,7 @@ namespace AcoEngine
             throw new NotImplementedException();
         }
 
-        #region Useful but probably unused
-        public static double GetRandomNumber(double minimum, double maximum)
-        {
-            Random random = new Random();
-            return random.NextDouble() * (maximum - minimum) + minimum;
-        }
+        #region Useful but probably unused        
 
         private bool ValidatePoints(int[] point)
         {
