@@ -16,10 +16,9 @@ namespace AcoConsole
 
             int[] startingPoint = points[0];
 
-            var problem = new Problem(points, startingPoint);
+            var problem = new Problem(points, startingPoint, colonySize: 1, iterations: 1);
 
-            var rnd = Problem.GetRandomNumber(0, 12.5);
-            
+            problem.FindRoute();
 
             Console.WriteLine("enter to exit");
             while (Console.ReadKey().Key != ConsoleKey.Enter) { }
