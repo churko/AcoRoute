@@ -14,9 +14,11 @@ namespace AcoEngine
         private Dictionary<int,Node> nodes;
 
         private int routeLength;
-        public int RouteLength => routeLength; 
+        public int RouteLength => routeLength;
 
-        private List<int> route;
+        static Random random = new Random();
+
+        List<int> route = new List<int>();
         private void AddNodeToRoute(Node node, int distance)
         {
             this.AntId = Interlocked.Increment(ref nextId);
@@ -47,44 +49,70 @@ namespace AcoEngine
 
         private void SetFirstNode(Dictionary<int,Node> nodes)
         {
-            Random rnd = new Random();
-            var firstNode = nodes[rnd.Next(nodes.Count - 1)];
+            //var minKey = nodes.Min(kvp => kvp.Key);
+            //var rnd = random.Next(minKey, minKey + nodes.Count - 1);
+            var rnd = random.Next(1, nodes.Count);
+            var firstNode = nodes[rnd];
             this.AddNodeToRoute(firstNode, 0);
         }
 
-        public void FindNextNode(List<Arc> arcsInfo, Dictionary<int, List<Node>> nearestNodes)
+        public void FindNextNode(List<Arc> arcsInfo, Dictionary<int, List<int>> nearestNodes, double qProbability)
         {
-            int nextNodeId;
+            var nextNodeId = new int();
             var lastNode = this.route.Last();
-            var lastNodeNN = nearestNodes[lastNode];
-            var validNN = lastNodeNN.Where(node => !this.route.Any(rNodeId => rNodeId == node.NodeId)).Select(x=> x.NodeId).ToList();
-            if (validNN.Count() > 0)
+            var qRandom = random.NextDouble();
+
+
+            if (qRandom < qProbability) //if q probability search the best possible
             {
-                var validArcs = arcsInfo.Where(arc => arc.InitNodeId == lastNode && validNN.Any(x => x == arc.EndNodeId )).OrderBy(x => x.ChoiceInfo).ToList();
-                var totalChoiceInfo = validArcs.Sum(x => x.ChoiceInfo);                
-                double selectionProbability = 0;
-                double rnd = Problem.GetRandomNumber(0, totalChoiceInfo);
-                foreach(var arc in validArcs)
-                {
-                    if (selectionProbability < rnd)
-                    {
-                        nextNodeId = arc.EndNodeId;
-                        selectionProbability += selectionProbability; 
-                    }
-                    else
-                    {
-                        break;
-                    }
-                }
-
-
-                //var arcProb = arcsInfo.Where(arc => validNN.Any(nNodeId => arc.EndNodeId == nNodeId)).OrderBy(x=>x.ChoiceInfo).ToDictionary(x => x.EndNodeId, x => x.ChoiceInfo);
-
+                var bestArc = arcsInfo.Where(arc => arc.InitNodeId == lastNode && !this.route.Any(rNodeId => rNodeId == arc.EndNodeId)).OrderByDescending(x => x.ChoiceInfo).FirstOrDefault();
+                nextNodeId = bestArc.EndNodeId;
             }
             else
             {
-                //todo que hacer si no hay mas disponibilidad de nearest neighbour
+                //nearest neighbour search
+                var lastNodeNN = nearestNodes[lastNode];
+                var validNN = lastNodeNN.Where(nodeId => !this.route.Any(rNodeId => rNodeId == nodeId)).ToList();
+                if (validNN.Count() > 0)
+                {
+                    var validArcs = arcsInfo.Where(arc => arc.InitNodeId == lastNode && validNN.Any(x => x == arc.EndNodeId)).OrderBy(x => x.ChoiceInfo).ToList();
+                    nextNodeId = this.GetNextNode(validArcs);
+
+                   
+                }
+                else //search in all if not nearest neighbour available
+                {
+                    var validArcs = arcsInfo.Where(arc => arc.InitNodeId == lastNode && !this.route.Any(rNodeId => rNodeId == arc.EndNodeId)).OrderBy(x => x.ChoiceInfo).ToList();
+                    nextNodeId = this.GetNextNode(validArcs);
+                }
             }
+            this.route.Add(nextNodeId);
+        }
+
+        private int GetNextNode(List<Arc> validArcs)
+        {
+            var totalChoiceInfo = validArcs.Sum(x => x.ChoiceInfo);
+            int? nextNodeId = null;
+            double selectionProbability = (double)0;
+            double rnd = GetRandomNumber(0, totalChoiceInfo);
+            foreach (var arc in validArcs)
+            {
+                if (selectionProbability < rnd)
+                {
+                    nextNodeId = arc.EndNodeId;
+                    selectionProbability += arc.ChoiceInfo;
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return (int)nextNodeId;
+        }
+
+        public static double GetRandomNumber(double minimum, double maximum)
+        {
+            return (random.NextDouble() * (maximum - minimum)) + minimum;
         }
 
     }
