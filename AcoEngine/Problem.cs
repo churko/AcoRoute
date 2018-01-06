@@ -13,11 +13,12 @@ namespace AcoEngine
         int nnCount;
         Dictionary<int, List<int>> nearestNodes = new Dictionary<int, List<int>>();
         Node startingNode;
-        Node endNode;
+        int? endNodeId;
         int colonySize;
         int iterations; //termination condition
-        BestSoFar bestSoFar;
+        BestSoFar bestSoFar = new BestSoFar();
         double initialPheromone;
+        double localTrailPheromone;
         int routeLength;
         double heuristicsWeight;
         double qProbability;
@@ -27,7 +28,7 @@ namespace AcoEngine
 
         //constructor: initializes the problem parameters
         public Problem(int[][] points, int[] startingPoint, int colonySize = 30, int nnCount = 5,
-            int iterations = 50, double heuristicsWeight = 2, double qProbability = 0.1, int[] endPoint = null)
+            int iterations = 50, double heuristicsWeight = 2, double qProbability = 0.9, double lTrailPheromone = 0.1, int[] endPoint = null)
         {
             //these should not be necessary since the application will pass the correct dimentions, however I'll leave them as placeholders
             if (!this.ValidatePoints(points))
@@ -46,28 +47,36 @@ namespace AcoEngine
             }
 
 
-            //initializes the number of iterations
+            //sets the number of iterations
             this.iterations = iterations;
 
             //Converts the points passed as arrays into nodes
             this.nodes = points.Select(x => new Node(x)).ToDictionary(x => x.NodeId, x => x);
             this.routeLength = this.nodes.Count;
 
-            //initializes colony size
+            //sets colony size
             this.colonySize = colonySize;
 
-            //initializes the nearest neighbours list count
+            //sets the nearest neighbours list count
             this.nnCount = nnCount < this.routeLength  ? nnCount : this.routeLength - 1;
 
-            //initializes the heuristicsWeight
+            //sets the heuristicsWeight
             this.heuristicsWeight = heuristicsWeight;
 
             this.SetStartingNode(startingPoint);
 
+            if (endPoint != null)
+            {
+                this.SetEndNode(endPoint);
+            }
+
             //builds arcs for the graph and the nearest neighbours list
             this.BuildGraph();
 
-            //initializes the pheromones
+            //sets local pheromone update "rate"
+            this.localTrailPheromone = lTrailPheromone;
+
+            //initializes pheromone ammount in all arcs
             this.InitializePheromone();
         }
 
@@ -83,6 +92,24 @@ namespace AcoEngine
             if (this.startingNode.NodeId < 1)
             {
                 //TODO devolver error que el nodo elegido como inicial no existe
+            }
+        }
+
+        public void SetEndNode(int[] endPoint)
+        {
+            if (endPoint != null)
+            {
+                if (this.nodes.Count() < 1)
+                {
+                    //TODO devolver error de lista de nodos vacia
+                }
+
+                this.endNodeId = nodes.Where(x => x.Value.Lat == endPoint[0] && x.Value.Lng == endPoint[1]).FirstOrDefault().Value.NodeId;
+
+                if (this.endNodeId < 1)
+                {
+                    //TODO devolver error que el nodo elegido como inicial no existe
+                }
             }
         }
 
@@ -136,8 +163,7 @@ namespace AcoEngine
 
             this.initialPheromone = Convert.ToDouble(1) / Convert.ToDouble(this.routeLength * nnDistance);
 
-            this.arcsInfo.ForEach(x => x.Pheromone = this.initialPheromone);
-
+            this.arcsInfo.ForEach(x => { x.Pheromone = this.initialPheromone; x.InitialPheromone = this.initialPheromone; });
         }
 
         //starts the search
@@ -145,47 +171,75 @@ namespace AcoEngine
         {
             for (var i = 0; i < this.iterations; i++)
             {
-                this.bestSoFar = this.ContructSolutions();
-                //this.bestSoFar = this.TwoOpt();
+                var bestAnt = this.ContructSolutions();
+                bestAnt = this.LocalSearch(bestAnt);
+
+                var iterationBest = new BestSoFar()
+                {
+                    Route = bestAnt.Route,
+                    RouteLength = bestAnt.RouteLength,
+                    Iteration = i
+                };
+
+                if (this.bestSoFar == null)
+                {
+                    this.bestSoFar = iterationBest;
+                }
+                else
+                {
+                    this.bestSoFar = this.bestSoFar.RouteLength < iterationBest.RouteLength ? this.bestSoFar : iterationBest;
+                }
                 //this.UpdateStats(i);
-                //this.UpdatePheromone();
+                //TODO this.UpdatePheromone();
             }
 
-            int[][] finalRoute = new int[1][] { new int[2] { 2, 4 } };
-            return finalRoute;
+            var bestRoute = this.bestSoFar.GetRoute();
+            return bestRoute;
         }
 
-        private BestSoFar ContructSolutions()
+        private Ant ContructSolutions()
         {
-            List<Ant> antColony = Enumerable.Range(0, this.colonySize).Select(x => new Ant(this.nodes)).ToList();           
+            //create ant colony
+            List<Ant> antColony = Enumerable.Range(0, this.colonySize).Select(x => new Ant(this.nodes, this.localTrailPheromone, this.startingNode.NodeId, this.endNodeId)).ToList();
 
+            //find routes for all ants in the iteration
             for (var i = 0; i < this.nodes.Count; i++)
             {
                 foreach (var ant in antColony)
                 {
                     ant.FindNextNode(this.arcsInfo, this.nearestNodes, this.qProbability);
-                    //TODO termine aca
                 }
             }
 
-            var iterationBest = new BestSoFar();
-            return iterationBest.Distance < this.bestSoFar.Distance ? iterationBest : this.bestSoFar;
+            foreach(var ant in antColony)
+            {
+                ant.AddNodeToRoute(ant.Route[0], this.arcsInfo.Find(x => x.InitNodeId == ant.Route[ant.Route.Count - 1] && x.EndNodeId == ant.Route[0]).Distance);
+                
+                //since the normal algorithm does not have an ending point and I need one I have to transform the ones the ants found into valid routes
+                if (this.endNodeId != null)
+                {
+                    ant.BuildValidRoute(this.arcsInfo);
+                }
+            }                     
+
+            //get best route in the iteration
+            var bestAnt = antColony.OrderBy(ant => ant.RouteLength).FirstOrDefault();
+            
+            return bestAnt;
         }
 
-        private BestSoFar TwoOpt()
+        private Ant LocalSearch(Ant bestAnt)
         {
-            var localBest = new BestSoFar();
-            return localBest.Distance < this.bestSoFar.Distance ? localBest : this.bestSoFar;
-        }
-
-        private void UpdateStats(int iteration)
-        {
-            this.bestSoFar.Iteration = iteration;
+            var localSearchBest = bestAnt;
+            return localSearchBest;
         }
 
         private void UpdatePheromone()
         {
-            throw new NotImplementedException();
+            foreach(var node in this.bestSoFar.Route)
+            {
+                
+            }
         }
 
         #region Useful but probably unused        
@@ -210,16 +264,20 @@ namespace AcoEngine
             }
             return true;
         }
-
-        //public void AddNode(int[])
         #endregion
     }
 
     internal class BestSoFar
     {
-        public List<Node> Route { get; set; }
-        public int Distance { get; set; }
+        public List<int> Route { get; set; }
+        public double RouteLength { get; set; }
         public int Iteration { get; set; }
 
+        public int[][] GetRoute()
+        {
+
+            //TODO
+            return new int[1][] { new int[2] { 2, 4 } };
+        }
     }
 }

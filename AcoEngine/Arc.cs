@@ -9,15 +9,18 @@ namespace AcoEngine
     public class Arc
     {
         readonly double distance;
+        public double Distance => distance;
 
         double pheromone = 0;
 
         double choiceInfo;
+        public double ChoiceInfo => choiceInfo;
 
         double heuristicWeightInP;
 
         public int InitNodeId { get; }
         public int EndNodeId { get; }
+        public double InitialPheromone { get; set; }
 
         public Arc(Node[] arcNodes, double heuristicWeight)
         {
@@ -27,12 +30,8 @@ namespace AcoEngine
             var latDist = Math.Abs(arcNodes[0].Lat - arcNodes[1].Lat);
             var lngDist = Math.Abs(arcNodes[0].Lng - arcNodes[1].Lng);
             this.distance = lngDist + latDist;
-
             this.heuristicWeightInP = Math.Pow(((double)1 / this.distance), heuristicWeight);
-
-        }
-
-        public double Distance => distance;
+        }        
 
         public double Pheromone {
             get
@@ -44,15 +43,11 @@ namespace AcoEngine
                 this.pheromone = value;
                 this.UpdateChoiceInfo();
             }
-        }
-
-        public double ChoiceInfo { get => choiceInfo; }
+        }        
 
         public void UpdateChoiceInfo()
         {
             this.choiceInfo = this.pheromone * this.heuristicWeightInP;
         }
-
-
     }
 }
