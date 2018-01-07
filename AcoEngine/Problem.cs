@@ -174,7 +174,7 @@ namespace AcoEngine
             this.bestSoFar = null; //if I run the method w/o reinstancing the Problem object best so far must be reinitialized or it will carry to the next run
             for (var i = 0; i < this.iterations; i++)
             {
-                var bestAnt = this.ContructSolutions();
+                var bestAnt = this.ConstructSolutions();
                 bestAnt = this.LocalSearch(bestAnt);
 
                 var iterationBest = new BestSoFar(this.startingNode.NodeId, this.endNodeId)
@@ -216,7 +216,7 @@ namespace AcoEngine
             return finalArray;
         }
 
-        private Ant ContructSolutions()
+        private Ant ConstructSolutions()
         {
             //create ant colony
             List<Ant> antColony = Enumerable.Range(0, this.colonySize).Select(x => new Ant(this.nodes, this.pheromoneEvaporation, this.startingNode.NodeId, this.endNodeId)).ToList();
