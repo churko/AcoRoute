@@ -19,7 +19,7 @@ namespace AcoEngine
         BestSoFar bestSoFar;
         double initialPheromone;
         double pheromoneEvaporation;
-        int routeLength;
+        int routeDistance;
         double heuristicsWeight;
         double qProbability;
 
@@ -52,13 +52,13 @@ namespace AcoEngine
 
             //Converts the points passed as arrays into nodes
             this.nodes = points.Select(x => new Node(x)).ToDictionary(x => x.NodeId, x => x);
-            this.routeLength = this.nodes.Count;
+            this.routeDistance = this.nodes.Count;
 
             //sets colony size
             this.colonySize = colonySize;
 
             //sets the nearest neighbours list count
-            this.nnCount = nnCount < this.routeLength  ? nnCount : this.routeLength - 1;
+            this.nnCount = nnCount < this.routeDistance  ? nnCount : this.routeDistance - 1;
 
             //sets the heuristicsWeight
             this.heuristicsWeight = heuristicsWeight;
@@ -151,7 +151,7 @@ namespace AcoEngine
 
             var nextNode = this.startingNode; 
             tour.Add(nextNode);
-            for (var i = 1; i < this.routeLength; i++)
+            for (var i = 1; i < this.routeDistance; i++)
             {
                 var pairs = this.nodes.Where(currNode => !tour.Any(tNode => tNode.NodeId == currNode.Key)).Select(currNode => new Node[] { nextNode, currNode.Value }).ToList();
                 var nodeArcs = this.arcsInfo.Where(x => pairs.Any(pNode => pNode[0].NodeId == x.InitNodeId && pNode[1].NodeId == x.EndNodeId)).OrderBy(o => o.Distance).ToList();
@@ -161,7 +161,7 @@ namespace AcoEngine
             }
             nnDistance += this.arcsInfo.Where(x => x.InitNodeId == nextNode.NodeId && x.EndNodeId == this.startingNode.NodeId).FirstOrDefault().Distance;
 
-            this.initialPheromone = Convert.ToDouble(1) / Convert.ToDouble(this.routeLength * nnDistance);
+            this.initialPheromone = Convert.ToDouble(1) / Convert.ToDouble(this.routeDistance * nnDistance);
 
             this.arcsInfo.ForEach(x => { x.Pheromone = this.initialPheromone; x.InitialPheromone = this.initialPheromone; });
         }
@@ -177,7 +177,7 @@ namespace AcoEngine
                 var iterationBest = new BestSoFar(this.startingNode.NodeId)
                 {
                     Route = bestAnt.Route,
-                    RouteLength = bestAnt.RouteLength,
+                    RouteDistance = bestAnt.RouteDistance,
                     Iteration = i
                 };
 
@@ -187,7 +187,7 @@ namespace AcoEngine
                 }
                 else
                 {
-                    this.bestSoFar = this.bestSoFar.RouteLength < iterationBest.RouteLength ? this.bestSoFar : iterationBest;
+                    this.bestSoFar = this.bestSoFar.RouteDistance < iterationBest.RouteDistance ? this.bestSoFar : iterationBest;
                 }
                 //this.UpdateStats(i);
                 this.UpdatePheromone();
@@ -223,7 +223,7 @@ namespace AcoEngine
             }                     
 
             //get best route in the iteration
-            var bestAnt = antColony.OrderBy(ant => ant.RouteLength).FirstOrDefault();
+            var bestAnt = antColony.OrderBy(ant => ant.RouteDistance).FirstOrDefault();
             
             return bestAnt;
         }
@@ -237,7 +237,7 @@ namespace AcoEngine
 
         private void UpdatePheromone()
         {
-            var deltaEvaporation = this.pheromoneEvaporation / this.bestSoFar.RouteLength;
+            var deltaEvaporation = this.pheromoneEvaporation / this.bestSoFar.RouteDistance;
             var route = this.bestSoFar.Route;
             for (var i = 0; i< this.bestSoFar.Route.Count - 2; i++)
             {
@@ -275,7 +275,7 @@ namespace AcoEngine
     {
         List<int> route = new List<int>();
         public List<int> Route { get => route; set => route = value; }
-        public double RouteLength { get; set; }
+        public double RouteDistance { get; set; }
         public int Iteration { get; set; }
         int startingNodeId;
 
@@ -287,6 +287,7 @@ namespace AcoEngine
 
         public int[][] GetRoute()
         {
+            var initialIndex = this.route.FindIndex(x => x == this.startingNodeId);
             return new int[1][] { new int[2] { 2, 4 } };
         }
     }

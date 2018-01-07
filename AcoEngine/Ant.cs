@@ -15,8 +15,8 @@ namespace AcoEngine
 
         double pheromoneEvaporation;
 
-        double routeLength;
-        public double RouteLength => routeLength;
+        double routeDistance;
+        public double RouteDistance => routeDistance;
 
         static Random random = new Random();
 
@@ -35,7 +35,7 @@ namespace AcoEngine
         public Ant(Dictionary<int, Node> nodes, double pheromoneEvaporation, int pInitNodeId, int? pEndNodeId )
         {
             this.AntId = Interlocked.Increment(ref nextId);
-            this.routeLength = 0;
+            this.routeDistance = 0;
             this.pheromoneEvaporation = pheromoneEvaporation;
             this.problemInitNodeId = pInitNodeId;
             this.problemEndNodeId = pEndNodeId;
@@ -45,7 +45,7 @@ namespace AcoEngine
 
         public void AddNodeToRoute(int nodeId, double distance)
         {
-            this.routeLength += distance;
+            this.routeDistance += distance;
             this.route.Add(nodeId);
             this.nodes.Remove(nodeId);
         } 
@@ -159,7 +159,7 @@ namespace AcoEngine
                 deltaDistance -= arcsInfo.Find(x => x.InitNodeId == this.problemEndNodeId && x.EndNodeId == this.problemInitNodeId).Distance;
             }
 
-            this.routeLength += deltaDistance;
+            this.routeDistance += deltaDistance;
         }
     }
 }
