@@ -143,6 +143,7 @@ namespace AcoEngine
                 //deltaDistance += arcsInfo.Find(x => x.InitNodeId == this.problemEndNodeId && x.EndNodeId == this.problemInitNodeId).Distance;
 
                 this.route.RemoveAt(pEndIndex);
+                pInitialIndex = pEndIndex < pInitialIndex ? pInitialIndex - 1 : pInitialIndex;
                 this.route.Insert(pInitialIndex, (int)this.problemEndNodeId);
 
                 if(pEndIndex == 0)

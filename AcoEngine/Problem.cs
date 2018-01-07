@@ -171,6 +171,7 @@ namespace AcoEngine
         //starts the search
         public int[][] FindRoute()
         {
+            this.bestSoFar = null; //if I run the method w/o reinstancing the Problem object best so far must be reinitialized or it will carry to the next run
             for (var i = 0; i < this.iterations; i++)
             {
                 var bestAnt = this.ContructSolutions();
@@ -183,7 +184,7 @@ namespace AcoEngine
                     Iteration = i
                 };
 
-                if (this.bestSoFar == null)
+                if (this.bestSoFar == null || this.bestSoFar.Route.Count != this.nodes.Count)
                 {
                     this.bestSoFar = iterationBest;
                 }
@@ -196,7 +197,7 @@ namespace AcoEngine
             }
 
             var bestRoute = this.bestSoFar.GetOrderedRoute();
-            var bestRouteArray = this.RouteToArray(bestRoute);
+            var bestRouteArray = this.RouteToArray(bestRoute);            
 
             return bestRouteArray;
         }
@@ -241,8 +242,8 @@ namespace AcoEngine
             }                     
 
             //get best route in the iteration
-            var bestAnt = antColony.OrderBy(ant => ant.RouteDistance).FirstOrDefault();
-            
+            var bestAnt = antColony.OrderBy(ant => ant.RouteDistance).FirstOrDefault();         
+
             return bestAnt;
         }
 
