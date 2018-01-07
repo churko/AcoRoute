@@ -13,7 +13,7 @@ namespace AcoConsole
         static void Main(string[] args)
         {
             var startTime = System.DateTime.Now;
-            int[][] points = CreatePointsMatrix(10);
+            int[][] points = CreatePointsMatrix(30);
 
             var random = new Random();
 
@@ -21,7 +21,7 @@ namespace AcoConsole
 
             int[] endPoint = points[1];
 
-            var problem = new Problem(points, startingPoint, colonySize: 50, iterations: 100, endPoint: endPoint);
+            var problem = new Problem(points, startingPoint, colonySize: 50, iterations: 50, endPoint: endPoint);
             ConsoleKey key;
             var it = 1;
             do
