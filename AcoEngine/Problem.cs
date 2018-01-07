@@ -46,6 +46,8 @@ namespace AcoEngine
                 //TODO devolver mensaje de error de dimension incorrecta de punto final
             }
 
+            //sets the probability
+            this.qProbability = qProbability;
 
             //sets the number of iterations
             this.iterations = iterations;
@@ -174,7 +176,7 @@ namespace AcoEngine
                 var bestAnt = this.ContructSolutions();
                 bestAnt = this.LocalSearch(bestAnt);
 
-                var iterationBest = new BestSoFar(this.startingNode.NodeId)
+                var iterationBest = new BestSoFar(this.startingNode.NodeId, this.endNodeId)
                 {
                     Route = bestAnt.Route,
                     RouteDistance = bestAnt.RouteDistance,
@@ -193,8 +195,24 @@ namespace AcoEngine
                 this.UpdatePheromone();
             }
 
-            var bestRoute = this.bestSoFar.GetRoute();
-            return bestRoute;
+            var bestRoute = this.bestSoFar.GetOrderedRoute();
+            var bestRouteArray = this.RouteToArray(bestRoute);
+
+            return bestRouteArray;
+        }
+
+        private int[][] RouteToArray(List<int> route)
+        {
+            var latLngList = new List<int[]>();
+            foreach (var nodeId in route)
+            {
+                var node = this.nodes[nodeId];
+                var latLng = new int[2] { node.Lat, node.Lng };
+                latLngList.Add(latLng);
+            }
+
+            var finalArray = latLngList.ToArray();
+            return finalArray;
         }
 
         private Ant ContructSolutions()
@@ -203,7 +221,7 @@ namespace AcoEngine
             List<Ant> antColony = Enumerable.Range(0, this.colonySize).Select(x => new Ant(this.nodes, this.pheromoneEvaporation, this.startingNode.NodeId, this.endNodeId)).ToList();
 
             //find routes for all ants in the iteration
-            for (var i = 0; i < this.nodes.Count; i++)
+            for (var i = 0; i < this.nodes.Count - 1; i++)
             {
                 foreach (var ant in antColony)
                 {
@@ -278,17 +296,30 @@ namespace AcoEngine
         public double RouteDistance { get; set; }
         public int Iteration { get; set; }
         int startingNodeId;
+        int? endNodeId;
 
-        public BestSoFar(int startingNodeId)
+        public BestSoFar(int startingNodeId, int? endNodeId)
         {
             this.startingNodeId = startingNodeId;
+            this.endNodeId = endNodeId;
         }
         
 
-        public int[][] GetRoute()
+        public List<int> GetOrderedRoute()
         {
-            var initialIndex = this.route.FindIndex(x => x == this.startingNodeId);
-            return new int[1][] { new int[2] { 2, 4 } };
+            var routeCount = this.route.Count;
+            this.route.RemoveAt(routeCount - 1);
+            routeCount--;            
+            var initialIndex = this.route.FindIndex(x => x == this.startingNodeId);            
+            var subroute = this.route.GetRange(initialIndex, routeCount - initialIndex);
+            subroute.AddRange(this.route.GetRange(0, initialIndex));
+            if(this.endNodeId == null)
+            {
+                subroute.Add(subroute[0]);
+                routeCount++;
+            }
+            
+            return subroute;
         }
     }
 }

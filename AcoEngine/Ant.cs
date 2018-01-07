@@ -47,7 +47,7 @@ namespace AcoEngine
         {
             this.routeDistance += distance;
             this.route.Add(nodeId);
-            this.nodes.Remove(nodeId);
+            //this.nodes.Remove(nodeId);
         } 
 
         private void SetFirstNode(Dictionary<int,Node> nodes)
@@ -67,15 +67,15 @@ namespace AcoEngine
 
             if (qRandom < qProbability) //if q probability search the best possible
             {
-                //nextNodeArc = arcsInfo.Where(arc => arc.InitNodeId == lastNode && !this.route.Any(rNodeId => rNodeId == arc.EndNodeId)).OrderByDescending(x => x.ChoiceInfo).FirstOrDefault();                
-                nextNodeArc = arcsInfo.Where(arc => arc.InitNodeId == lastNode).OrderByDescending(x => x.ChoiceInfo).FirstOrDefault();
+                nextNodeArc = arcsInfo.Where(arc => arc.InitNodeId == lastNode && !this.route.Any(rNodeId => rNodeId == arc.EndNodeId)).OrderByDescending(x => x.ChoiceInfo).FirstOrDefault();                
+                //nextNodeArc = arcsInfo.Where(arc => arc.InitNodeId == lastNode).OrderByDescending(x => x.ChoiceInfo).FirstOrDefault();
             }
             else
             {
                 //nearest neighbour search
-                //var lastNodeNN = nearestNodes[lastNode];
-                //var validNN = lastNodeNN.Where(nodeId => !this.route.Any(rNodeId => rNodeId == nodeId)).ToList();
-                var validNN = nearestNodes[lastNode];
+                var lastNodeNN = nearestNodes[lastNode];
+                var validNN = lastNodeNN.Where(nodeId => !this.route.Any(rNodeId => rNodeId == nodeId)).ToList();
+                //var validNN = nearestNodes[lastNode];
 
                 if (validNN.Count() > 0)
                 {
@@ -84,8 +84,8 @@ namespace AcoEngine
                 }
                 else //search in all if not nearest neighbour available
                 {
-                    //var validArcs = arcsInfo.Where(arc => arc.InitNodeId == lastNode && !this.route.Any(rNodeId => rNodeId == arc.EndNodeId)).OrderBy(x => x.ChoiceInfo).ToList();
-                    var validArcs = arcsInfo.Where(arc => arc.InitNodeId == lastNode).OrderBy(x => x.ChoiceInfo).ToList();
+                    var validArcs = arcsInfo.Where(arc => arc.InitNodeId == lastNode && !this.route.Any(rNodeId => rNodeId == arc.EndNodeId)).OrderBy(x => x.ChoiceInfo).ToList();
+                    //var validArcs = arcsInfo.Where(arc => arc.InitNodeId == lastNode).OrderBy(x => x.ChoiceInfo).ToList();
 
                     nextNodeArc = this.GetNextNode(validArcs);                    
                 }
@@ -149,9 +149,7 @@ namespace AcoEngine
                 {
                     this.route.RemoveAt(this.route.Count - 1);
                     this.route.Add(this.route[0]);
-                }
-
-                
+                }                
             }
             else
             {
@@ -160,6 +158,7 @@ namespace AcoEngine
             }
 
             this.routeDistance += deltaDistance;
+            //TODO i don't remember if this already takes away the repeating node, will have to check
         }
     }
 }

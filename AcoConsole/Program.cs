@@ -16,7 +16,9 @@ namespace AcoConsole
 
             int[] startingPoint = points[0];
 
-            var problem = new Problem(points, startingPoint, colonySize: 1, iterations: 1);
+            int[] endPoint = points[1];
+
+            var problem = new Problem(points, startingPoint, colonySize: 1, iterations: 1, endPoint: endPoint);
 
             problem.FindRoute();
 
