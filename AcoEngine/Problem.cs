@@ -16,9 +16,9 @@ namespace AcoEngine
         int? endNodeId;
         int colonySize;
         int iterations; //termination condition
-        BestSoFar bestSoFar = new BestSoFar();
+        BestSoFar bestSoFar;
         double initialPheromone;
-        double localTrailPheromone;
+        double pheromoneEvaporation;
         int routeLength;
         double heuristicsWeight;
         double qProbability;
@@ -28,7 +28,7 @@ namespace AcoEngine
 
         //constructor: initializes the problem parameters
         public Problem(int[][] points, int[] startingPoint, int colonySize = 30, int nnCount = 5,
-            int iterations = 50, double heuristicsWeight = 2, double qProbability = 0.9, double lTrailPheromone = 0.1, int[] endPoint = null)
+            int iterations = 50, double heuristicsWeight = 2, double qProbability = 0.9, double pheromoneEvaporation = 0.1, int[] endPoint = null)
         {
             //these should not be necessary since the application will pass the correct dimentions, however I'll leave them as placeholders
             if (!this.ValidatePoints(points))
@@ -74,7 +74,7 @@ namespace AcoEngine
             this.BuildGraph();
 
             //sets local pheromone update "rate"
-            this.localTrailPheromone = lTrailPheromone;
+            this.pheromoneEvaporation = pheromoneEvaporation;
 
             //initializes pheromone ammount in all arcs
             this.InitializePheromone();
@@ -174,7 +174,7 @@ namespace AcoEngine
                 var bestAnt = this.ContructSolutions();
                 bestAnt = this.LocalSearch(bestAnt);
 
-                var iterationBest = new BestSoFar()
+                var iterationBest = new BestSoFar(this.startingNode.NodeId)
                 {
                     Route = bestAnt.Route,
                     RouteLength = bestAnt.RouteLength,
@@ -190,7 +190,7 @@ namespace AcoEngine
                     this.bestSoFar = this.bestSoFar.RouteLength < iterationBest.RouteLength ? this.bestSoFar : iterationBest;
                 }
                 //this.UpdateStats(i);
-                //TODO this.UpdatePheromone();
+                this.UpdatePheromone();
             }
 
             var bestRoute = this.bestSoFar.GetRoute();
@@ -200,7 +200,7 @@ namespace AcoEngine
         private Ant ContructSolutions()
         {
             //create ant colony
-            List<Ant> antColony = Enumerable.Range(0, this.colonySize).Select(x => new Ant(this.nodes, this.localTrailPheromone, this.startingNode.NodeId, this.endNodeId)).ToList();
+            List<Ant> antColony = Enumerable.Range(0, this.colonySize).Select(x => new Ant(this.nodes, this.pheromoneEvaporation, this.startingNode.NodeId, this.endNodeId)).ToList();
 
             //find routes for all ants in the iteration
             for (var i = 0; i < this.nodes.Count; i++)
@@ -237,9 +237,12 @@ namespace AcoEngine
 
         private void UpdatePheromone()
         {
-            foreach(var node in this.bestSoFar.Route)
+            var deltaEvaporation = this.pheromoneEvaporation / this.bestSoFar.RouteLength;
+            var route = this.bestSoFar.Route;
+            for (var i = 0; i< this.bestSoFar.Route.Count - 2; i++)
             {
-                
+                var bsfArc = arcsInfo.Find(x => x.InitNodeId == route[i] && x.EndNodeId == route[i + 1]);
+                bsfArc.Pheromone = (1 - this.pheromoneEvaporation) * bsfArc.Pheromone + deltaEvaporation;
             }
         }
 
@@ -270,14 +273,20 @@ namespace AcoEngine
 
     internal class BestSoFar
     {
-        public List<int> Route { get; set; }
+        List<int> route = new List<int>();
+        public List<int> Route { get => route; set => route = value; }
         public double RouteLength { get; set; }
         public int Iteration { get; set; }
+        int startingNodeId;
+
+        public BestSoFar(int startingNodeId)
+        {
+            this.startingNodeId = startingNodeId;
+        }
+        
 
         public int[][] GetRoute()
         {
-
-            //TODO
             return new int[1][] { new int[2] { 2, 4 } };
         }
     }

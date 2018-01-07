@@ -13,7 +13,7 @@ namespace AcoEngine
 
         Dictionary<int,Node> nodes;
 
-        double localTrailPheromone;
+        double pheromoneEvaporation;
 
         double routeLength;
         public double RouteLength => routeLength;
@@ -32,11 +32,11 @@ namespace AcoEngine
         }
 
 
-        public Ant(Dictionary<int, Node> nodes, double pheromoneUpdate, int pInitNodeId, int? pEndNodeId )
+        public Ant(Dictionary<int, Node> nodes, double pheromoneEvaporation, int pInitNodeId, int? pEndNodeId )
         {
             this.AntId = Interlocked.Increment(ref nextId);
             this.routeLength = 0;
-            this.localTrailPheromone = pheromoneUpdate;
+            this.pheromoneEvaporation = pheromoneEvaporation;
             this.problemInitNodeId = pInitNodeId;
             this.problemEndNodeId = pEndNodeId;
             this.nodes = nodes;
@@ -96,7 +96,7 @@ namespace AcoEngine
 
         private void LocalPheromoneUpdate(Arc arcToUpdate)
         {
-            arcToUpdate.Pheromone = (1 - this.localTrailPheromone) * arcToUpdate.Pheromone + arcToUpdate.InitialPheromone;
+            arcToUpdate.Pheromone = (1 - this.pheromoneEvaporation) * arcToUpdate.Pheromone + arcToUpdate.InitialPheromone;
         }
 
         private Arc GetNextNode(List<Arc> validArcs)
