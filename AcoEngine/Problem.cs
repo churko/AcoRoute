@@ -8,7 +8,7 @@ namespace AcoEngine
 {
     public class Problem
     {
-        Dictionary<int,Node> nodes;
+        List<Node> nodes;
         List<Arc> arcsInfo = new List<Arc>();
         int nnCount;
         Dictionary<int, List<int>> nearestNodes = new Dictionary<int, List<int>>();
@@ -53,7 +53,7 @@ namespace AcoEngine
             this.iterations = iterations;
 
             //Converts the points passed as arrays into nodes
-            this.nodes = points.Select(x => new Node(x)).ToDictionary(x => x.NodeId, x => x);
+            this.nodes = points.Select(x => new Node(x)).ToList();
             this.routeDistance = this.nodes.Count;
 
             //sets colony size
@@ -89,7 +89,7 @@ namespace AcoEngine
                 //TODO devolver error de lista de nodos vacia
             }
 
-            this.startingNode = nodes.Where(x => x.Value.Lat == startingPoint[0] && x.Value.Lng == startingPoint[1]).FirstOrDefault().Value;
+            this.startingNode = nodes.Where(x => x.Lat == startingPoint[0] && x.Lng == startingPoint[1]).FirstOrDefault();
 
             if (this.startingNode.NodeId < 1)
             {
@@ -106,7 +106,7 @@ namespace AcoEngine
                     //TODO devolver error de lista de nodos vacia
                 }
 
-                this.endNodeId = nodes.Where(x => x.Value.Lat == endPoint[0] && x.Value.Lng == endPoint[1]).FirstOrDefault().Value.NodeId;
+                this.endNodeId = nodes.Where(x => x.Lat == endPoint[0] && x.Lng == endPoint[1]).FirstOrDefault().NodeId;
 
                 if (this.endNodeId < 1)
                 {
@@ -121,16 +121,16 @@ namespace AcoEngine
             {
                 var nearestNodes = new List<KeyValuePair<int, double>>();
 
-                foreach (var endNode in nodes.Where(currNode => currNode.Value.NodeId != initNode.Value.NodeId ))
+                foreach (var endNode in nodes.Where(currNode => currNode.NodeId != initNode.NodeId ))
                 {
                     //builds the arcs for the graph
-                    var arcNodes = new Node[] { initNode.Value, endNode.Value };
+                    var arcNodes = new Node[] { initNode, endNode };
                     //var arcNodesIds = new int[2] { initNode.Key, endNode.Key };
                     var arc = new Arc(arcNodes, this.heuristicsWeight);
                     this.arcsInfo.Add(arc);
 
                     //adds the node and distance to search for the nearest neighbours of initNode
-                    nearestNodes.Add(new KeyValuePair<int, double>(endNode.Key, arc.Distance));
+                    nearestNodes.Add(new KeyValuePair<int, double>(endNode.NodeId, arc.Distance));
                 }
 
                 //get the (nnCount)nth nodes with the shortest distance to initNodes
@@ -140,13 +140,13 @@ namespace AcoEngine
                 //builds the nearestNodes dictionary
                 var nearestNeighbours = new List<int>();
                 nearestNeighbours = Enumerable.Range(0, this.nnCount).Select(x => nearestNodes[x].Key).ToList();
-                this.nearestNodes.Add(initNode.Key, nearestNeighbours);
+                this.nearestNodes.Add(initNode.NodeId, nearestNeighbours);
             }
         }
 
         private void InitializePheromone()
         {
-            var initialNodes = this.nodes.Select(x => x.Value).ToArray();
+            var initialNodes = this.nodes.ToArray();
 
             var tour = new List<Node>();
             var nnDistance = (double)0;
@@ -155,9 +155,9 @@ namespace AcoEngine
             tour.Add(nextNode);
             for (var i = 1; i < this.routeDistance; i++)
             {
-                var pairs = this.nodes.Where(currNode => !tour.Any(tNode => tNode.NodeId == currNode.Key)).Select(currNode => new Node[] { nextNode, currNode.Value }).ToList();
+                var pairs = this.nodes.Where(currNode => !tour.Any(tNode => tNode.NodeId == currNode.NodeId)).Select(currNode => new Node[] { nextNode, currNode }).ToList();
                 var nodeArcs = this.arcsInfo.Where(x => pairs.Any(pNode => pNode[0].NodeId == x.InitNodeId && pNode[1].NodeId == x.EndNodeId)).OrderBy(o => o.Distance).ToList();
-                nextNode = this.nodes[nodeArcs[0].EndNodeId];
+                nextNode = this.nodes.Find(x => x.NodeId == nodeArcs[0].EndNodeId);
                 nnDistance += nodeArcs[0].Distance;
                 tour.Add(nextNode);
             }
@@ -175,14 +175,15 @@ namespace AcoEngine
             for (var i = 0; i < this.iterations; i++)
             {
                 var bestAnt = this.ConstructSolutions();
-                bestAnt = this.LocalSearch(bestAnt);
+                var iterationBest = this.LocalSearch(bestAnt);
+                iterationBest.Iteration = i;
 
-                var iterationBest = new BestSoFar(this.startingNode.NodeId, this.endNodeId)
-                {
-                    Route = bestAnt.Route,
-                    RouteDistance = bestAnt.RouteDistance,
-                    Iteration = i
-                };
+                //var iterationBest = new BestSoFar(this.startingNode.NodeId, this.endNodeId)
+                //{
+                //    Route = bestAnt.Route,
+                //    RouteDistance = bestAnt.RouteDistance,
+                //    Iteration = i
+                //};
 
                 if (this.bestSoFar == null || this.bestSoFar.Route.Count != this.nodes.Count)
                 {
@@ -207,7 +208,7 @@ namespace AcoEngine
             var latLngList = new List<int[]>();
             foreach (var nodeId in route)
             {
-                var node = this.nodes[nodeId];
+                var node = this.nodes.Find(x => x.NodeId == nodeId);
                 var latLng = new int[2] { node.Lat, node.Lng };
                 latLngList.Add(latLng);
             }
@@ -219,18 +220,18 @@ namespace AcoEngine
         private Ant ConstructSolutions()
         {
             //create ant colony
-            List<Ant> antColony = Enumerable.Range(0, this.colonySize).Select(x => new Ant(this.nodes, this.pheromoneEvaporation, this.startingNode.NodeId, this.endNodeId)).ToList();
+            List<Ant> antColony = Enumerable.Range(0, this.colonySize).Select(x => new Ant(this.nodes, this.arcsInfo, this.pheromoneEvaporation, this.startingNode.NodeId, this.endNodeId)).ToList();
 
             //find routes for all ants in the iteration
             for (var i = 0; i < this.nodes.Count - 1; i++)
             {
                 foreach (var ant in antColony)
                 {
-                    ant.FindNextNode(this.arcsInfo, this.nearestNodes, this.qProbability);
+                    ant.FindNextNode(this.nearestNodes, this.qProbability);
                 }
             }
 
-            foreach(var ant in antColony)
+            foreach (var ant in antColony)
             {
                 ant.AddNodeToRoute(ant.Route[0], this.arcsInfo.Find(x => x.InitNodeId == ant.Route[ant.Route.Count - 1] && x.EndNodeId == ant.Route[0]).Distance);
                 
@@ -247,12 +248,62 @@ namespace AcoEngine
             return bestAnt;
         }
 
-        private Ant LocalSearch(Ant bestAnt)
+        private BestSoFar LocalSearch(Ant bestAnt)
         {
-            //TODO
-            var localSearchBest = bestAnt;
-            return localSearchBest;
+            var iterationBest = new BestSoFar(this.startingNode.NodeId, this.endNodeId)
+            {
+                Route = bestAnt.Route,
+                RouteDistance = bestAnt.RouteDistance
+            };
+
+            for(var i = 0; i < this.iterations; i++)
+            {
+                var children = FindChildren(iterationBest);
+                var bestChild = children.OrderBy(x => x.RouteDistance).FirstOrDefault();
+                if (bestChild.RouteDistance > iterationBest.RouteDistance)
+                {
+                    break;
+                }
+
+                iterationBest = bestChild;
+            }     
+
+            return iterationBest;
         }
+
+        private List<BestSoFar> FindChildren(BestSoFar bestRoute)
+        {
+            var children = new List<BestSoFar>();
+            int ceiling = this.endNodeId == null ? (bestRoute.Route.Count - 2) / 2 : (bestRoute.Route.Count - 3) / 2;
+            for (var i = 0; i < ceiling; i ++)
+            {
+                var index = 1 + i * 2;
+                var route = bestRoute.Route.ToList();
+                var distance = bestRoute.RouteDistance;
+
+                distance -= this.arcsInfo.Find(x => x.InitNodeId == route[index - 1] && x.EndNodeId == route[index]).Distance;
+                distance -= this.arcsInfo.Find(x => x.InitNodeId == route[index + 1] && x.EndNodeId == route[index + 2]).Distance;
+
+                var tmp = route[index];
+                route[index] = route[index+1];
+                route[index+1] = tmp;
+
+                distance += this.arcsInfo.Find(x => x.InitNodeId == route[index - 1] && x.EndNodeId == route[index]).Distance;
+                distance += this.arcsInfo.Find(x => x.InitNodeId == route[index + 1] && x.EndNodeId == route[index + 2]).Distance;
+
+                var child = new BestSoFar(this.startingNode.NodeId, this.endNodeId)
+                {
+                    Route = route,
+                    RouteDistance = distance,
+                    LocalSearch = true
+                };
+
+                children.Add(child);
+            }
+            
+            return children;
+        }
+
 
         private void UpdatePheromone()
         {
@@ -295,7 +346,10 @@ namespace AcoEngine
         List<int> route = new List<int>();
         public List<int> Route { get => route; set => route = value; }
         public double RouteDistance { get; set; }
-        public int Iteration { get; set; }
+        public int Iteration { get => iteration; set => iteration = value; }
+        public bool LocalSearch { get; set; }
+
+        int iteration;
         int startingNodeId;
         int? endNodeId;
 
@@ -303,6 +357,7 @@ namespace AcoEngine
         {
             this.startingNodeId = startingNodeId;
             this.endNodeId = endNodeId;
+            this.LocalSearch = false;
         }
         
 

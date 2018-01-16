@@ -11,7 +11,8 @@ namespace AcoEngine
 
         public int AntId { get; private set; }
 
-        Dictionary<int,Node> nodes;
+        List<Node> nodes;
+        List<Arc> arcsInfo;
 
         double pheromoneEvaporation;
 
@@ -32,34 +33,42 @@ namespace AcoEngine
         }
 
 
-        public Ant(Dictionary<int, Node> nodes, double pheromoneEvaporation, int pInitNodeId, int? pEndNodeId )
+        public Ant(List<Node> nodes, List<Arc> arcsInfo, double pheromoneEvaporation, int pInitNodeId, int? pEndNodeId )
         {
             this.AntId = Interlocked.Increment(ref nextId);
             this.routeDistance = 0;
             this.pheromoneEvaporation = pheromoneEvaporation;
             this.problemInitNodeId = pInitNodeId;
             this.problemEndNodeId = pEndNodeId;
-            this.nodes = nodes;
-            this.SetFirstNode(this.nodes);
+            this.nodes = nodes.ToList();
+            this.arcsInfo = arcsInfo.ToList();
+            this.SetFirstNode();
+        }
+
+        public void AddNodeToRoute(int nodeId, int previousNodeId, double distance)
+        {
+            this.routeDistance += distance;
+            this.route.Add(nodeId);
+            this.nodes.Remove(this.nodes.Find(x => x.NodeId == nodeId));
+            this.arcsInfo.RemoveAll(x => x.EndNodeId == nodeId || x.InitNodeId == previousNodeId);
         }
 
         public void AddNodeToRoute(int nodeId, double distance)
         {
             this.routeDistance += distance;
             this.route.Add(nodeId);
-            //this.nodes.Remove(nodeId);
-        } 
+        }
 
-        private void SetFirstNode(Dictionary<int,Node> nodes)
+        private void SetFirstNode()
         {
             //var minKey = nodes.Min(kvp => kvp.Key);
             //var rnd = random.Next(minKey, minKey + nodes.Count - 1);
-            var rnd = random.Next(1, nodes.Count);
-            var firstNode = nodes[rnd];
-            this.AddNodeToRoute(firstNode.NodeId, 0);
+            var rnd = random.Next(0, this.nodes.Count - 1);
+            var firstNode = this.nodes[rnd];
+            this.AddNodeToRoute(firstNode.NodeId, 0, 0);
         }
 
-        public void FindNextNode(List<Arc> arcsInfo, Dictionary<int, List<int>> nearestNodes, double qProbability)
+        public void FindNextNode(Dictionary<int, List<int>> nearestNodes, double qProbability)
         {
             Arc nextNodeArc = null;
             var lastNode = this.route.Last();
@@ -67,30 +76,30 @@ namespace AcoEngine
 
             if (qRandom < qProbability) //if q probability search the best possible
             {
-                nextNodeArc = arcsInfo.Where(arc => arc.InitNodeId == lastNode && !this.route.Any(rNodeId => rNodeId == arc.EndNodeId)).OrderByDescending(x => x.ChoiceInfo).FirstOrDefault();                
-                //nextNodeArc = arcsInfo.Where(arc => arc.InitNodeId == lastNode).OrderByDescending(x => x.ChoiceInfo).FirstOrDefault();
+                //nextNodeArc = arcsInfo.Where(arc => arc.InitNodeId == lastNode && !this.route.Any(rNodeId => rNodeId == arc.EndNodeId)).OrderByDescending(x => x.ChoiceInfo).FirstOrDefault();                
+                nextNodeArc = this.arcsInfo.Where(arc => arc.InitNodeId == lastNode).OrderByDescending(x => x.ChoiceInfo).FirstOrDefault();
             }
             else
             {
                 //nearest neighbour search
                 var lastNodeNN = nearestNodes[lastNode];
                 var validNN = lastNodeNN.Where(nodeId => !this.route.Any(rNodeId => rNodeId == nodeId)).ToList();
-                //var validNN = nearestNodes[lastNode];
+                //var validNN = nearestNodes[lastNode]; //this might be a problem for referencing & memory
 
-                if (validNN.Count() > 0)
+                if (validNN.Count > 0)
                 {
-                    var validArcs = arcsInfo.Where(arc => arc.InitNodeId == lastNode && validNN.Any(x => x == arc.EndNodeId)).OrderBy(x => x.ChoiceInfo).ToList();
+                    var validArcs = this.arcsInfo.Where(arc => arc.InitNodeId == lastNode && validNN.Any(x => x == arc.EndNodeId)).OrderBy(x => x.ChoiceInfo).ToList();
                     nextNodeArc = this.GetNextNode(validArcs);                                  
                 }
                 else //search in all if not nearest neighbour available
                 {
-                    var validArcs = arcsInfo.Where(arc => arc.InitNodeId == lastNode && !this.route.Any(rNodeId => rNodeId == arc.EndNodeId)).OrderBy(x => x.ChoiceInfo).ToList();
-                    //var validArcs = arcsInfo.Where(arc => arc.InitNodeId == lastNode).OrderBy(x => x.ChoiceInfo).ToList();
+                    //var validArcs = arcsInfo.Where(arc => arc.InitNodeId == lastNode && !this.route.Any(rNodeId => rNodeId == arc.EndNodeId)).OrderBy(x => x.ChoiceInfo).ToList();
+                    var validArcs = this.arcsInfo.Where(arc => arc.InitNodeId == lastNode).OrderBy(x => x.ChoiceInfo).ToList();
 
                     nextNodeArc = this.GetNextNode(validArcs);                    
                 }
             }
-            this.AddNodeToRoute(nextNodeArc.EndNodeId, nextNodeArc.Distance);
+            this.AddNodeToRoute(nextNodeArc.EndNodeId, nextNodeArc.InitNodeId, nextNodeArc.Distance);
             this.LocalPheromoneUpdate(nextNodeArc);
         }
 
@@ -159,7 +168,6 @@ namespace AcoEngine
             }
 
             this.routeDistance += deltaDistance;
-            //TODO i don't remember if this already takes away the repeating node, will have to check
         }
     }
 }

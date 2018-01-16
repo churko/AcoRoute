@@ -12,8 +12,8 @@ namespace AcoConsole
 
         static void Main(string[] args)
         {
-            var startTime = System.DateTime.Now;
-            int[][] points = CreatePointsMatrix(30);
+            System.DateTime startTime;
+            int[][] points = CreatePointsMatrix(50);
 
             var random = new Random();
 
@@ -21,12 +21,12 @@ namespace AcoConsole
 
             int[] endPoint = points[1];
 
-            var problem = new Problem(points, startingPoint, colonySize: 50, iterations: 50, endPoint: endPoint);
+            var problem = new Problem(points, startingPoint, colonySize: 50, iterations: 10, endPoint: endPoint);
             ConsoleKey key;
             var it = 1;
             do
             {
-
+                startTime = System.DateTime.Now;
                 var rndStart = random.Next(points.Length - 1);
 
                 int rndEnd;
@@ -35,9 +35,9 @@ namespace AcoConsole
                     rndEnd = random.Next(points.Length - 1);
                 } while (rndEnd == rndStart);
 
-                startingPoint = points[rndStart];
+                startingPoint = points[2];
 
-                endPoint = points[rndEnd];
+                endPoint = points[0];
 
                 
 
@@ -122,23 +122,24 @@ namespace AcoConsole
             //    points.Add(point);
             //}
 
-            var points = new List<int[]>();
+            //var points = new List<int[]>();
 
-            var random = new Random();
+            //var random = new Random();
 
-            for (var i = 0; i < pointCount; i++)
-            {
-                var rndLat = random.Next(999);
-                var rndLng = random.Next(999);
-                int[] coord = { rndLat, rndLng };
-                points.Add(coord);
-            }
+            //for (var i = 0; i < pointCount; i++)
+            //{
+            //    var rndLat = random.Next(999);
+            //    var rndLng = random.Next(999);
+            //    int[] coord = { rndLat, rndLng };
+            //    points.Add(coord);
+            //}
 
-            //{ new int[] { 111, 223 },
-            //                               new int[] { 2, 4 },
-            //                               new int[] { 3333, 4561 },
-            //                               new int[] { 44444, 23142 },
-            //                               new int[] { 55, 87 } };
+            var points = new List<int[]> {
+                                            new int[] { 6, 5 },
+                                           new int[] {8, 16 },
+                                           new int[] { 10, 8 },
+                                           new int[] { 14, 25 },
+                                           new int[] { 22, 14 } };
 
 
             var ret = points.ToArray();
