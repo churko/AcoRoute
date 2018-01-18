@@ -1,0 +1,54 @@
+﻿@model IEnumerable<AcoRoute.Models.Person>
+
+    @{
+        ViewBag.Title = "Calculate";
+    }
+
+    <h2>Calculate</h2>
+
+    @using (Html.BeginForm())
+    {
+        
+        
+        @Html.AntiForgeryToken()
+
+        <p>tabla</p>
+        <table id="availableAddresses" class="display"></table>
+
+
+        <script>
+            var people = @JavaScriptConvert.SerializeObject(Model);
+            var array = [];
+
+            debugger;
+
+            for (var i = 0; i < people.length; i++) {
+                var person = people[i];
+                var data = [person.personId, person.surname, person.name, person.documentType, person.documentNumber, person.address, person.latitude, person.longitude, person.cellphoneNumber, person.workphoneNumber];
+                array[i] = data;
+            }
+
+            $(document).ready(function () {
+                $('#availableAddresses').DataTable({
+                    data: array,
+                    columns: [
+                        { title: "PersonId" },
+                        { title: "Surname" },
+                        { title: "Name" },
+                        { title: "DocumentType" },
+                        { title: "DocumentNumber" },
+                        { title: "Address" },
+                        { title: "Latitude" },
+                        { title: "Longitude" },
+                        { title: "CellphoneNumber" },
+                        { title: "WorkphoneNumber" }
+                    ]
+                });
+            });
+        </script>
+        
+
+
+
+
+    }

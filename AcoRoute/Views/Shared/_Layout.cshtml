@@ -11,9 +11,9 @@
     @Scripts.Render("~/bundles/modernizr")
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link href="~/css/font-awesome.css" rel="stylesheet" />
-
-
+    <link href="~/Content/DataTables/css/jquery.dataTables.css" rel="stylesheet" />
 </head>
+
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">      
         
@@ -32,7 +32,8 @@
                     <li><a href="/Home/About"><i class="fa fa-question"></i> About</a></li>  
                     <li><a href="/Home/Contact"><i class="fa fa-envelope"></i> Contact</a></li>
                     <li><a href="/Persons/Index"><i class="fa fa-group"></i> People</a></li>
-                    <li><a href="/Vehicles/Index"><span class="fa fa-car"></span> Vehicles</a></li>
+                    <li><a href="/Vehicles/Index"><i class="fa fa-bus"></i> Vehicles</a></li>
+                    <li><a href="/Routes/Index"><i class="fa fa-flask"></i> test</a></li>
                 </ul>
                 @Html.Partial("_LoginPartial")
             </div>
@@ -48,6 +49,7 @@
 
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
+    @Scripts.Render("~/Scripts/DataTables/jquery.dataTables.js")
     @RenderSection("scripts", required: false)
 </body>
 </html>
