@@ -79,6 +79,22 @@ function addAddressMarker(point) {
     map.setCenter(point);
 }
 
+function addAddressMarker(point, title) {
+    addressMarker = new google.maps.Marker({
+        map: map,
+        position: point,
+        title: title
+    });
+    map.setCenter(point);
+    return addressMarker;
+}
+
+function removeAddressMarker(marker) {
+    debugger;
+    marker.setMap(null);
+}
+
+
 
 function addRouteMarker(point) {
     routeMarkers.push(new google.maps.Marker({

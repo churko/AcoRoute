@@ -1,54 +1,100 @@
 ﻿@model IEnumerable<AcoRoute.Models.Person>
 
-    @{
-        ViewBag.Title = "Calculate";
-    }
+@{
+    ViewBag.Title = "Calculate";
+}
 
-    <h2>Calculate</h2>
+<h2>Calculate</h2>
 
-    @using (Html.BeginForm())
-    {
+@using (Html.BeginForm())
+{
         
         
-        @Html.AntiForgeryToken()
+    @Html.AntiForgeryToken()
 
-        <p>tabla</p>
-        <table id="availableAddresses" class="display"></table>
+    <div class="form-horizontal container-fluid">
+        <div class="col-sm-7">
+            <table id="availableAddresses" class="display"></table>
+        </div>
+        <div class="col-sm-5">
+            <div id="map" class="form-group" style="width: 600px; height: 500px"></div>
+            <script type="text/javascript" src="~/Scripts/maps.js"></script>
+            <script type="text/javascript">
+                createMap(15, createPoint(-31.2528803, -61.4919196), false)
+            </script>
+        </div> 
 
+    </div>
 
-        <script>
-            var people = @JavaScriptConvert.SerializeObject(Model);
-            var array = [];
+    <script>
+        var people = @JavaScriptConvert.SerializeObject(Model);
+        var peopleArray = [];
+        var markersArray = [];
 
-            debugger;
+        for (var i = 0; i < people.length; i++) {
+            var person = people[i];
+            var personData = [person.personId, person.surname, person.name, person.address, person.latitude, person.longitude];
+            peopleArray[i] = personData;            
+        }
 
-            for (var i = 0; i < people.length; i++) {
-                var person = people[i];
-                var data = [person.personId, person.surname, person.name, person.documentType, person.documentNumber, person.address, person.latitude, person.longitude, person.cellphoneNumber, person.workphoneNumber];
-                array[i] = data;
-            }
-
-            $(document).ready(function () {
-                $('#availableAddresses').DataTable({
-                    data: array,
-                    columns: [
-                        { title: "PersonId" },
-                        { title: "Surname" },
-                        { title: "Name" },
-                        { title: "DocumentType" },
-                        { title: "DocumentNumber" },
-                        { title: "Address" },
-                        { title: "Latitude" },
-                        { title: "Longitude" },
-                        { title: "CellphoneNumber" },
-                        { title: "WorkphoneNumber" }
-                    ]
-                });
+        $(document).ready(function () {
+            var table = $('#availableAddresses').DataTable({
+                data: peopleArray,
+                columns: [
+                    { title: "PersonId" },
+                    { title: "Surname" },
+                    { title: "Name" },
+                    { title: "Address" },
+                    { title: "Latitude" },
+                    { title: "Longitude" }
+                ],
+                "columnDefs": [
+                    {
+                        "targets": [0],
+                        "visible": false,
+                        "searchable": false
+                    },
+                    {
+                        "targets": [4],
+                        "visible": false,
+                        "searchable": false
+                    },
+                    {
+                        "targets": [5],
+                        "visible": false,
+                        "searchable": false
+                    }]
             });
-        </script>
-        
 
-
-
-
-    }
+            $('#availableAddresses tbody').on('click', 'tr', function () {
+                $(this).toggleClass('selected');
+                var selectedRow = table.row(this).data();
+                
+                if ($(this).hasClass('selected')) {                     
+                    var point = createPoint(selectedRow[4], selectedRow[5]);
+                    var title = selectedRow[1] + ", " + selectedRow[2]
+                    var marker = addAddressMarker(point, title);
+                    var markerObj =
+                        {
+                            personId: selectedRow[0],
+                            marker: marker
+                        };
+                    markersArray.push(markerObj);
+                    
+                }
+                else {
+                    debugger;
+                    var markerObj = markersArray.filter(function (markerObj) {
+                        return markerObj.personId == selectedRow[0];
+                    })[0];
+                    
+                    removeAddressMarker(markerObj.marker);
+                    var index = markersArray.indexOf(markerObj);
+                    if (index > -1) {
+                        markersArray.splice(index, 1);
+                    }
+                }
+            });
+        });
+    </script>
+}
