@@ -14,8 +14,29 @@
 
     <div class="form-horizontal container-fluid">
         <div class="col-sm-7">
-            <table id="availableAddresses" class="display"></table>
+            <div>
+                <table id="peopleTable" class="display"></table>
+                <br />
+                <br />
+            </div>
+            <div form-horizontal container-fluid>
+                <div class="col-sm-2"></div>
+                <div class="col-sm-4">
+                    <button type="button" onclick="addDestinations()"><i class="fa fa-caret-down"></i> Agregar</button>
+                </div>
+                <div class="col-sm-4">
+                    <button type="button" onclick="removeDestinations()"><i class="fa fa-caret-up"></i> Remover</button>
+                </div>
+            </div>
+            <div>
+                <br />
+                <br />
+                <br />
+                <table id="destinationsTable" class="display"></table>
+            </div>
         </div>
+        
+        
         <div class="col-sm-5">
             <div id="map" class="form-group" style="width: 600px; height: 500px"></div>
             <script type="text/javascript" src="~/Scripts/maps.js"></script>
@@ -23,13 +44,16 @@
                 createMap(15, createPoint(-31.2528803, -61.4919196), false)
             </script>
         </div> 
-
     </div>
+    
 
     <script>
         var people = @JavaScriptConvert.SerializeObject(Model);
         var peopleArray = [];
+        var destinationsArray = [];
         var markersArray = [];
+        var peopleTable;
+        var destionationsTable;
 
         for (var i = 0; i < people.length; i++) {
             var person = people[i];
@@ -38,7 +62,7 @@
         }
 
         $(document).ready(function () {
-            var table = $('#availableAddresses').DataTable({
+            peopleTable = $('#peopleTable').DataTable({
                 data: peopleArray,
                 columns: [
                     { title: "PersonId" },
@@ -55,6 +79,18 @@
                         "searchable": false
                     },
                     {
+                        "targets": [1],
+                        "width": "25%"
+                    },
+                    {
+                        "targets": [2],
+                        "width": "25%"
+                    },
+                    {
+                        "targets": [3],
+                        "width": "50%"
+                    },
+                    {
                         "targets": [4],
                         "visible": false,
                         "searchable": false
@@ -66,9 +102,9 @@
                     }]
             });
 
-            $('#availableAddresses tbody').on('click', 'tr', function () {
+            $('#peopleTable tbody').on('click', 'tr', function () {
                 $(this).toggleClass('selected');
-                var selectedRow = table.row(this).data();
+                var selectedRow = peopleTable.row(this).data();
                 
                 if ($(this).hasClass('selected')) {                     
                     var point = createPoint(selectedRow[4], selectedRow[5]);
@@ -83,18 +119,98 @@
                     
                 }
                 else {
-                    debugger;
-                    var markerObj = markersArray.filter(function (markerObj) {
-                        return markerObj.personId == selectedRow[0];
-                    })[0];
-                    
-                    removeAddressMarker(markerObj.marker);
-                    var index = markersArray.indexOf(markerObj);
-                    if (index > -1) {
-                        markersArray.splice(index, 1);
-                    }
+                    removeMarker(selectedRow[0]);
                 }
             });
         });
+
+        $(document).ready(function () {
+            destinationsTable = $('#destinationsTable').DataTable({
+                data: destinationsArray,
+                columns: [
+                    { title: "PersonId" },
+                    { title: "Surname" },
+                    { title: "Name" },
+                    { title: "Address" },
+                    { title: "Latitude" },
+                    { title: "Longitude" }
+                ],
+                "columnDefs": [
+                    {
+                        "targets": [0],
+                        "visible": false,
+                        "searchable": false
+                    },
+                    {
+                        "targets": [1],
+                        "width": "25%"
+                    },
+                    {
+                        "targets": [2],
+                        "width": "25%"
+                    },
+                    {
+                        "targets": [3],
+                        "width": "50%"
+                    },
+                    {
+                        "targets": [4],
+                        "visible": false,
+                        "searchable": false
+                    },
+                    {
+                        "targets": [5],
+                        "visible": false,
+                        "searchable": false
+                    }]
+            });
+
+            $('#destinationsTable tbody').on('click', 'tr', function () {
+                $(this).toggleClass('selected');
+            });
+        });
+
+
+
+        function addDestinations() {
+            var selectedToAdd = peopleTable.rows('.selected').data();
+            if (selectedToAdd.length > 0) {
+                destinationsArray.push.apply(destinationsArray, selectedToAdd);
+                destinationsTable.clear().rows.add(destinationsArray).draw();
+                peopleArray = peopleArray.filter(function (person) {
+                    return !destinationsArray.includes(person);
+                });
+                peopleTable.clear().rows.add(peopleArray).draw();
+            }
+        }
+
+        function removeDestinations() {
+            var selectedToRemove = destinationsTable.rows('.selected').data();              
+
+            if (selectedToRemove.length > 0) {
+                peopleArray.push.apply(peopleArray, selectedToRemove);
+                peopleTable.clear().rows.add(peopleArray).draw();
+                destinationsArray = destinationsArray.filter(function (destination) {
+                    return !peopleArray.includes(destination);
+                });
+                destinationsTable.clear().rows.add(destinationsArray).draw();
+                for (var i = 0; i < peopleArray.length; i++) {
+                    removeMarker(peopleArray[i][0]);
+                }  
+            }
+        }
+
+        function removeMarker(personId) {
+            var markerObj = markersArray.filter(function (markerObj) {
+                return markerObj.personId == personId;
+            })[0];
+            if (markerObj) {
+                removeAddressMarker(markerObj.marker);
+                var index = markersArray.indexOf(markerObj);
+                if (index > -1) {
+                    markersArray.splice(index, 1);
+                }
+            }
+        }
     </script>
 }

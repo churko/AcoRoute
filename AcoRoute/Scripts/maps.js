@@ -90,7 +90,6 @@ function addAddressMarker(point, title) {
 }
 
 function removeAddressMarker(marker) {
-    debugger;
     marker.setMap(null);
 }
 
