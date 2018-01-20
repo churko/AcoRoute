@@ -25,10 +25,10 @@
             <div form-horizontal container-fluid>
                 <div class="col-sm-2"></div>
                 <div class="col-sm-4">
-                    <button type="button" onclick="addDestinations()"><i class="fa fa-caret-down"></i> Agregar</button>
+                    <button class="btn btn-primary" type="button" onclick="addDestinations()"><i class="fa fa-caret-down"></i> Agregar</button>
                 </div>
                 <div class="col-sm-4">
-                    <button type="button" onclick="removeDestinations()"><i class="fa fa-caret-up"></i> Remover</button>
+                    <button class="btn btn-primary" type="button" onclick="removeDestinations()"><i class="fa fa-caret-up"></i> Remover</button>
                 </div>
             </div>
             <div>
@@ -36,6 +36,10 @@
                 <br />
                 <br />
                 <table id="destinationsTable" class="display"></table>
+            </div>
+            <div>
+                <button id="btnSetOrigin" class="btn btn-warning disabled" type="button"><i class="fa fa-flag"></i> Setear origen</button>
+                <button id="btnSetDestiny" class="btn btn-success disabled" type="button"><i class="fa fa-flag-checkered"></i> Setear destino</button>
             </div>
             
         </div>
@@ -50,5 +54,5 @@
     </div>
    
 }
-@Scripts.Render("~/Scripts/maps.js");
-@Scripts.Render("~/Scripts/calculate.js");
+@Scripts.Render("~/Scripts/maps.js")
+@Scripts.Render("~/Scripts/calculate.js")

@@ -132,6 +132,8 @@ function addDestinations() {
             return !destinationsArray.includes(person);
         });
         peopleTable.clear().rows.add(peopleArray).draw();
+        $("#btnSetOrigin").removeClass("disabled");
+        $("#btnSetDestiny").removeClass("disabled");
     }
 }
 
@@ -147,6 +149,11 @@ function removeDestinations() {
         destinationsTable.clear().rows.add(destinationsArray).draw();
         for (var i = 0; i < peopleArray.length; i++) {
             removeMarker(peopleArray[i][0]);
+        }
+        if (destinationsArray.length == 0)
+        {
+            $("#btnSetOrigin").addClass("disabled");
+            $("#btnSetDestiny").addClass("disabled");
         }
     }
 }
