@@ -108,9 +108,8 @@
 
         <div class="col-sm-6">
             <div id="map" class="form-group" style="width: 600px; height: 500px"></div>
-            <script type="text/javascript" src="~/Scripts/maps.js"></script>
             <script type="text/javascript">
-                createMap(15, createPoint(-31.2528803, -61.4919196), false)
+                $(document).ready(function () { createMap(15, createPoint(-31.2528803, -61.4919196), false) });
             </script>
         </div> 
         
@@ -120,13 +119,9 @@
         }
 
     </div>
-
-
-
 }
-
-
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/Scripts/maps.js")
 }

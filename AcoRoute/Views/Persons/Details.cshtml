@@ -71,20 +71,21 @@
         <p>
             @Html.EditorFor(model => model.Latitude, new { htmlAttributes = new { @class = "form-control hidden" } })
             @Html.EditorFor(model => model.Longitude, new { htmlAttributes = new { @class = "form-control hidden" } })
-            @Html.ActionLink("Edit", "Edit", new { id = Model.PersonId }) |
-            @Html.ActionLink("Back to List", "Index")
+            <a href="/Persons/Edit/@Model.PersonId"><i class="fa fa-edit"></i> Edit</a> |
+            <a href="/Persons/Index"><i class="fa fa-list"></i> Back to List</a> 
         </p>
     </div>   
 
     <div class="col-sm-6">
         <div id="map" class="form-group" style="width: 600px; height: 500px"></div>
-        <script type="text/javascript" src="~/Scripts/maps.js"></script>
         <script type="text/javascript">
-
+            $(document).ready(function () {
                 var point = createPoint($("#Latitude")[0].value, $("#Longitude")[0].value);
                 createMap(15, point, true);
+            });
         </script>
     </div>
 
 </div>
 
+@Scripts.Render("~/Scripts/maps.js")

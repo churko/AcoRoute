@@ -107,10 +107,11 @@
 
         <div class="col-sm-6">
             <div id="map" class="form-group" style="width: 600px; height: 500px"></div>
-            <script type="text/javascript" src="~/Scripts/maps.js"></script>
-            <script type="text/javascript">                
-                var point = createPoint($("#Latitude")[0].value, $("#Longitude")[0].value);
-                createMap(15, point, true);
+            <script type="text/javascript"> 
+                $(document).ready(function () {
+                    var point = createPoint($("#Latitude")[0].value, $("#Longitude")[0].value);
+                    createMap(15, point, true);
+                });
             </script>
         </div>
 
@@ -124,4 +125,5 @@
 
 @section Scripts {
     @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/Scripts/maps.js")
 }
