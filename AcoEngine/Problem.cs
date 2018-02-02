@@ -78,8 +78,6 @@ namespace AcoEngine
             //sets local pheromone update "rate"
             this.pheromoneEvaporation = pheromoneEvaporation;
 
-            //initializes pheromone ammount in all arcs
-            this.InitializePheromone();
         }
 
         public void SetStartingNode(int[] startingPoint)
@@ -171,19 +169,15 @@ namespace AcoEngine
         //starts the search
         public int[][] FindRoute()
         {
-            this.bestSoFar = null; //if I run the method w/o reinstancing the Problem object best so far must be reinitialized or it will carry to the next run
+            
             for (var i = 0; i < this.iterations; i++)
             {
+                //initializes pheromone ammount in all arcs
+                this.InitializePheromone();
+
                 var bestAnt = this.ConstructSolutions();
                 var iterationBest = this.LocalSearch(bestAnt);
                 iterationBest.Iteration = i;
-
-                //var iterationBest = new BestSoFar(this.startingNode.NodeId, this.endNodeId)
-                //{
-                //    Route = bestAnt.Route,
-                //    RouteDistance = bestAnt.RouteDistance,
-                //    Iteration = i
-                //};
 
                 if (this.bestSoFar == null || this.bestSoFar.Route.Count != this.nodes.Count)
                 {
@@ -198,7 +192,9 @@ namespace AcoEngine
             }
 
             var bestRoute = this.bestSoFar.GetOrderedRoute();
-            var bestRouteArray = this.RouteToArray(bestRoute);            
+            var bestRouteArray = this.RouteToArray(bestRoute);
+
+            this.bestSoFar = null; //if I run the method w/o reinstancing the Problem object best so far must be reinitialized or it will carry to the next run
 
             return bestRouteArray;
         }
