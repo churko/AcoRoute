@@ -7,9 +7,7 @@
 <h2>Calculate</h2>
 
 @using (Html.BeginForm())
-{
-        
-        
+{       
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal container-fluid">
@@ -37,9 +35,14 @@
                 <br />
                 <table id="destinationsTable" class="display"></table>
             </div>
-            <div>
-                <button id="btnSetOrigin" class="btn btn-warning disabled" type="button"><i class="fa fa-flag"></i> Setear origen</button>
-                <button id="btnSetDestiny" class="btn btn-success disabled" type="button"><i class="fa fa-flag-checkered"></i> Setear destino</button>
+            <div form-horizontal container-fluid>
+                <div class="col-sm-9">
+                    <button id="btnSetOrigin" class="btn btn-warning disabled" type="button" onclick="setOrigin()"><i class="fa fa-flag"></i> Setear origen</button>
+                    <button id="btnSetDestination" class="btn btn-success disabled" type="button" onclick="setEndDestination()"><i class="fa fa-flag-checkered"></i> Setear destino</button>
+                </div>
+                <div class="col-sm-3">
+                    <button id="btnCalculate" class="btn btn-primary disabled" type="button" onclick=""><i class="fa fa-map-o"></i> Calcular</button>
+                </div>
             </div>
             
         </div>
