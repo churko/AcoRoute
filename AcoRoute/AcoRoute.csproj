@@ -563,6 +563,7 @@
     <Content Include="Views\Persons\Edit.cshtml" />
     <Content Include="Views\Persons\Index.cshtml" />
     <Content Include="Views\Routes\Calculate.cshtml" />
+    <Content Include="Views\Routes\Route.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

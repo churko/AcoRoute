@@ -16,14 +16,26 @@ function initializeTables(param) {
 
 
     peopleTable = $('#peopleTable').DataTable({
+        "language": {
+            "lengthMenu": "Mostrar _MENU_ registros por página",
+            "zeroRecords": "No hay registros para mostrar",
+            "info": "Mostrando página _PAGE_ de _PAGES_",
+            "infoEmpty": "No hay registros disponibles",
+            "infoFiltered": "(filtrado desde _MAX_ registros totales)",
+            "search": "Buscar",
+            "paginate": {
+                "previous": "Anterior",
+                "next": "Siguiente"
+            }
+        },
         data: peopleArray,
         columns: [  
             { title: "BeginEnd" },
             { title: "" },
             { title: "PersonId" },
-            { title: "Surname" },
-            { title: "Name" },
-            { title: "Address" },
+            { title: "Apellido" },
+            { title: "Nombre" },
+            { title: "Domicilio" },
             { title: "Latitude" },
             { title: "Longitude" }            
         ],
@@ -90,14 +102,26 @@ function initializeTables(param) {
     });
 
     destinationsTable = $('#destinationsTable').DataTable({
+        "language": {
+            "lengthMenu": "Mostrar _MENU_ registros por página",
+            "zeroRecords": "No hay registros para mostrar",
+            "info": "Mostrando página _PAGE_ de _PAGES_",
+            "infoEmpty": "No hay registros disponibles",
+            "infoFiltered": "(filtrado desde _MAX_ registros totales)",
+            "search": "Buscar",
+            "paginate": {
+                "previous": "Anterior",
+                "next": "Siguiente"
+            }
+        },
         data: destinationsArray,
         columns: [
             { title: "BeginEnd" },
             { title: "" },
             { title: "PersonId" },
-            { title: "Surname" },
-            { title: "Name" },
-            { title: "Address" },
+            { title: "Apellido" },
+            { title: "Nombre" },
+            { title: "Domicilio" },
             { title: "Latitude" },
             { title: "Longitude" }            
         ],
@@ -209,16 +233,16 @@ function setOrigin() {
         return
     }
 
-    var rows = destinationsTable.rows().data();
-    for (var i = 0; i < rows.length; i++) {
-        if (rows[i][0] == 2 || rows[i][0] == 3) {
-            rows[i][0] -= 2;
-            rows[i][1] = rows[i][1].replace('<i class="fa fa-flag fa-lg text-origin"></i> ','');
-        }
+    var destinations = destinationsTable.rows().data();
+    for (var i = 0; i < destinations.length; i++) {
+        if (destinations[i][0] == 2) {
+            destinations[i][0] = 0;
+            destinations[i][1] = '';
+        }        
     }
 
-    selectedRow[0][0] += 2;
-    selectedRow[0][1] = '<i class="fa fa-flag fa-lg text-origin"></i> ' + selectedRow[0][1];
+    selectedRow[0][0] = 2;
+    selectedRow[0][1] = '<i class="fa fa-flag fa-lg text-origin"></i>';
 
     destinationsTable.clear().rows.add(destinationsArray).order([[0, "desc"]]).draw(false);
 }
@@ -230,16 +254,51 @@ function setEndDestination() {
         return
     }
 
-    var rows = destinationsTable.rows().data();
-    for (var i = 0; i < rows.length; i++) {
-        if (rows[i][0] == 1 || rows[i][0] == 3) {
-            rows[i][0] -= 1;
-            rows[i][1] = rows[i][1].replace('<i class="fa fa-flag-checkered fa-lg text-destination"></i>','');
+    var destinations = destinationsTable.rows().data();
+    for (var i = 0; i < destinations.length; i++) {
+        if (destinations[i][0] == 1) {
+            destinations[i][0] = 0;
+            destinations[i][1] = '';
         }
     }
 
-    selectedRow[0][0] += 1;
-    selectedRow[0][1] = selectedRow[0][1] + '<i class="fa fa-flag-checkered fa-lg text-destination"></i>';
+    selectedRow[0][0] = 1;
+    selectedRow[0][1] = '<i class="fa fa-flag-checkered fa-lg text-destination"></i>';
 
     destinationsTable.clear().rows.add(destinationsArray).order([[0, "desc"]]).draw(false);
+}
+
+function calculateRoute() {
+    var destinationsCoordinates = [];
+    var originCoordinates = [];
+    var endDestinationCoordinates = [];
+    var destinations = destinationsTable.rows().data();
+    for (var i = 0; i < destinations.length; i++) {
+        var singleCoordinates = [destinations[i][6], destinations[i][7]];
+        destinationsCoordinates[i] = singleCoordinates;
+
+        switch (destinations[i][0]) {
+            case 3:
+                originCoordinates = singleCoordinates;
+                endDestinationCoordinates = singleCoordinates;
+                break;
+            case 2:
+                originCoordinates = singleCoordinates;
+                break;
+            case 1:
+                endDestinationCoordinates = singleCoordinates;
+        }
+    }
+    var param = {
+        points: destinationsCoordinates,
+        startCoord: originCoordinates,
+        endCoord: endDestinationCoordinates
+    }
+
+    $.ajax({
+        type: "POST",
+        url: "/Routes/CalculateRoute",
+        data: JSON.stringify(param),
+        dataType: "json"
+    });
 }
