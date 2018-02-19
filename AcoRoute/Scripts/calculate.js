@@ -245,9 +245,11 @@ function setOrigin() {
     selectedRow[0][1] = '<i class="fa fa-flag fa-lg text-origin"></i>';
 
     destinationsTable.clear().rows.add(destinationsArray).order([[0, "desc"]]).draw(false);
+    enableDisableCalculate();
 }
 
 function setEndDestination() {
+    debugger;
     var selectedRow = destinationsTable.rows('.selected').data();
     if (selectedRow.length != 1) {
         showAlert('Error', 'Seleccione una fila')
@@ -266,6 +268,7 @@ function setEndDestination() {
     selectedRow[0][1] = '<i class="fa fa-flag-checkered fa-lg text-destination"></i>';
 
     destinationsTable.clear().rows.add(destinationsArray).order([[0, "desc"]]).draw(false);
+    enableDisableCalculate();
 }
 
 function calculateRoute() {
@@ -289,16 +292,37 @@ function calculateRoute() {
                 endDestinationCoordinates = singleCoordinates;
         }
     }
+    debugger;
     var param = {
         points: destinationsCoordinates,
         startCoord: originCoordinates,
         endCoord: endDestinationCoordinates
     }
 
+    console.log();
     $.ajax({
         type: "POST",
-        url: "/Routes/CalculateRoute",
-        data: JSON.stringify(param),
+        url: "/Routes/CalculateRoute/",
+        data: param,
         dataType: "json"
     });
+}
+
+function enableDisableCalculate() {
+
+    var origin = false;
+    var endDestination = false;
+
+    var destinations = destinationsTable.rows().data();
+    for (var i = 0; i < destinations.length; i++) {
+        origin = origin || destinations[i][0] == 2;
+        endDestination = endDestination || destinations[i][0] == 1;
+    }
+
+    if (origin && endDestination) {
+        $("#btnCalculate").removeClass("disabled");
+    } else {
+        $("#btnCalculate").addClass("disabled");
+    }
+
 }

@@ -4,33 +4,22 @@
     ViewBag.Title = "Index";
 }
 
-<h2>Index</h2>
+<h2><i class="fa fa-users"></i> Pasajeros</h2>
 
 <p>
-    @Html.ActionLink("Create New", "Create")
+    <br />
+    <a href="/Persons/Create"><i class="fa fa-user-plus"></i> Crear Nuevo</a>
 </p>
 <table class="table">
     <tr>
         <th>
-            @Html.DisplayNameFor(model => model.Surname)
+            @Html.DisplayName("Apellido")
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.Name)
+            @Html.DisplayName("Nombre")
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.DocumentType)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.DocumentNumber)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.Address)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.CellphoneNumber)
-        </th>
-        <th>
-            @Html.DisplayNameFor(model => model.WorkphoneNumber)
+            @Html.DisplayName("Domicilio")
         </th>
         <th></th>
     </tr>
@@ -44,24 +33,12 @@
             @Html.DisplayFor(modelItem => item.Name)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.DocumentType)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.DocumentNumber)
-        </td>
-        <td>
             @Html.DisplayFor(modelItem => item.Address)
         </td>
         <td>
-            @Html.DisplayFor(modelItem => item.CellphoneNumber)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.WorkphoneNumber)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "Edit", new { id=item.PersonId }) |
-            @Html.ActionLink("Details", "Details", new { id=item.PersonId }) |
-            @Html.ActionLink("Delete", "Delete", new { id=item.PersonId })
+            <a href="/Persons/Edit/@item.PersonId"><i class="fa fa-edit"></i> Editar</a> |
+            <a href="/Persons/Details/@item.PersonId"><i class="fa fa-eye"></i> Ver</a> |
+            <a href="/Persons/Delete/@item.PersonId"><i class="fa fa-trash"></i> Borrar</a>
         </td>
     </tr>
 }

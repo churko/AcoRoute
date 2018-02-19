@@ -24,7 +24,7 @@ namespace AcoRoute.Controllers
         }
 
         [HttpPost]
-        public ActionResult CalculateRoute(dynamic param)
+        public ActionResult CalculateRoute(RouteParams param)
         {
             var multiplier = 1E7;
 
@@ -38,9 +38,14 @@ namespace AcoRoute.Controllers
                 pointsList.Add(new int[] { (int)lat, (int)lon });
             }
 
+            int startLat = (int)Math.Truncate(param.startCoord[0] * multiplier);
+            int startLon = (int)Math.Truncate(param.startCoord[1] * multiplier);
+            int endLat = (int)Math.Truncate(param.endCoord[0] * multiplier);
+            int endLon = (int)Math.Truncate(param.endCoord[1] * multiplier);
+
             int[][] pointsArray = pointsList.ToArray();
-            int[] startingPoint = param.startCoord;
-            int[] endPoint = param.endCoord;
+            int[] startingPoint = new int[] { startLat, startLon };
+            int[] endPoint = new int[] { endLat, endLon };
 
             var problem = new Problem(pointsArray, startingPoint, colonySize: 50, iterations: 10, endPoint: endPoint);
             var route = problem.FindRoute();
@@ -57,6 +62,13 @@ namespace AcoRoute.Controllers
             var routeArray = routeList.ToArray();
 
             return View("~/Views/Routes/Route.cshtml", routeArray);
+        }
+
+        public class RouteParams
+        {
+            public double[][] points;
+            public double[] startCoord;
+            public double[] endCoord;
         }
     }
 }

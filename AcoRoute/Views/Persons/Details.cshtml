@@ -4,15 +4,14 @@
     ViewBag.Title = "Details";
 }
 
-<h2>Details</h2>
+<h3><b><i class="fa fa-eye fa-lg"></i> @Model.Surname, @Model.Name</b></h3>
 
 <div class="form-horizontal container-fluid">
     <div class="col-sm-6">
-        <h4>Person</h4>
         <hr />
         <dl class="dl-horizontal">
             <dt>
-                @Html.DisplayNameFor(model => model.Surname)
+                @Html.DisplayName("Apellido")
             </dt>
 
             <dd>
@@ -20,7 +19,7 @@
             </dd>
 
             <dt>
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayName("Nombre")
             </dt>
 
             <dd>
@@ -28,51 +27,18 @@
             </dd>
 
             <dt>
-                @Html.DisplayNameFor(model => model.DocumentType)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.DocumentType)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.DocumentNumber)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.DocumentNumber)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.Address)
+                @Html.DisplayName("Domicilio")
             </dt>
 
             <dd>
                 @Html.DisplayFor(model => model.Address)
             </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.CellphoneNumber)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.CellphoneNumber)
-            </dd>
-
-            <dt>
-                @Html.DisplayNameFor(model => model.WorkphoneNumber)
-            </dt>
-
-            <dd>
-                @Html.DisplayFor(model => model.WorkphoneNumber)
-            </dd>
-
         </dl> 
         <p>
             @Html.EditorFor(model => model.Latitude, new { htmlAttributes = new { @class = "form-control hidden" } })
             @Html.EditorFor(model => model.Longitude, new { htmlAttributes = new { @class = "form-control hidden" } })
-            <a href="/Persons/Edit/@Model.PersonId"><i class="fa fa-edit"></i> Edit</a> |
-            <a href="/Persons/Index"><i class="fa fa-list"></i> Back to List</a> 
+            <a href="/Persons/Edit/@Model.PersonId"><i class="fa fa-edit"></i> Editar</a> |
+            <a href="/Persons/Index"><i class="fa fa-list"></i> Volver</a> 
         </p>
     </div>   
 

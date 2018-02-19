@@ -4,7 +4,7 @@
     ViewBag.Title = "Create";
 }
 
-<h2>Create</h2>
+<h3><b><i class="fa fa-user-plus fa-lg"></i> Crear Nuevo</b></h3>
 
 
 @using (Html.BeginForm()) 
@@ -12,12 +12,11 @@
     @Html.AntiForgeryToken()    
     
     <div class="form-horizontal container-fluid">
-        <h4>Person</h4>
         <hr />
         <div class="col-sm-6">
             @Html.ValidationSummary(true, "", new { @class = "text-danger" })
             <div class="form-group">
-                @Html.LabelFor(model => model.Surname, htmlAttributes: new { @class = "control-label col-sm-4" })
+                @Html.Label("Apellido", htmlAttributes: new { @class = "control-label col-sm-4" })
                 <div class="col-sm-6">
                     @Html.EditorFor(model => model.Surname, new { htmlAttributes = new { @class = "form-control" } })
                     @Html.ValidationMessageFor(model => model.Surname, "", new { @class = "text-danger" })
@@ -25,7 +24,7 @@
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-sm-4" })
+                @Html.Label("Nombre", htmlAttributes: new { @class = "control-label col-sm-4" })
                 <div class="col-sm-6">
                     @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
                     @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
@@ -33,23 +32,7 @@
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(model => model.DocumentType, htmlAttributes: new { @class = "control-label col-sm-4" })
-                <div class="col-sm-6">
-                    @Html.EditorFor(model => model.DocumentType, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.DocumentType, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.DocumentNumber, htmlAttributes: new { @class = "control-label col-sm-4" })
-                <div class="col-sm-6">
-                    @Html.EditorFor(model => model.DocumentNumber, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.DocumentNumber, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label col-sm-4" })
+                @Html.Label("Domicilio", htmlAttributes: new { @class = "control-label col-sm-4" })
                 <div class="col-sm-6">
                     @Html.EditorFor(model => model.Address, new {
                         htmlAttributes = new {
@@ -79,27 +62,11 @@
             </div>
 
             <div class="form-group">
-                @Html.LabelFor(model => model.CellphoneNumber, htmlAttributes: new { @class = "control-label col-sm-4" })
-                <div class="col-sm-6">
-                    @Html.EditorFor(model => model.CellphoneNumber, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.CellphoneNumber, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
-                @Html.LabelFor(model => model.WorkphoneNumber, htmlAttributes: new { @class = "control-label col-sm-4" })
-                <div class="col-sm-6">
-                    @Html.EditorFor(model => model.WorkphoneNumber, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.WorkphoneNumber, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="form-group">
                 <div class="col-sm-offset-2 col-sm-6">
-                    <input type="submit" value="Create" class="btn btn-default" />
+                    <button type="submit" value="Create" class="btn btn-default"> Crear</button>
                 </div>
                 <div>
-                    @Html.ActionLink("Back to List", "Index")
+                    <a href="/Persons/Index"><i class="fa fa-list"></i> Volver</a> 
                 </div>
             </div>               
         </div>
