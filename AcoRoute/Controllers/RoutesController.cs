@@ -33,42 +33,30 @@ namespace AcoRoute.Controllers
         [HttpPost]
         public ActionResult CalculateRoute(RouteParams param)
         {
-            var multiplier = 1E7;
-
-            List<long[]> pointsList = new List<long[]>();
+            List<double[]> pointsList = new List<double[]>();
 
             foreach (var point in param.Points)
             {
-                var lat = Math.Truncate(Convert.ToDouble(point[0]) * multiplier);
-                var lon = Math.Truncate(Convert.ToDouble(point[1]) * multiplier);
+                var lat = Convert.ToDouble(point[0]);
+                var lon = Convert.ToDouble(point[1]);
 
-                pointsList.Add(new long[] {(long)lat, (long)lon });
+                pointsList.Add(new double[] {lat, lon });
             }
 
-            long startLat = (long)Math.Truncate(Convert.ToDouble(param.StartCoord[0]) * multiplier);
-            long startLon = (long)Math.Truncate(Convert.ToDouble(param.StartCoord[1]) * multiplier);
-            long endLat = (long)Math.Truncate(Convert.ToDouble(param.EndCoord[0]) * multiplier);
-            long endLon = (long)Math.Truncate(Convert.ToDouble(param.EndCoord[1]) * multiplier);
+            var startLat = Convert.ToDouble(param.StartCoord[0]);
+            var startLon = Convert.ToDouble(param.StartCoord[1]);
+            var endLat = Convert.ToDouble(param.EndCoord[0]);
+            var endLon = Convert.ToDouble(param.EndCoord[1]);
 
-            long[][] pointsArray = pointsList.ToArray();
-            long[] startingPoint = new long[] { startLat, startLon };
-            long[] endPoint = new long[] { endLat, endLon };
+            double[][] pointsArray = pointsList.ToArray();
+            double[] startingPoint = new double[] { startLat, startLon };
+            double[] endPoint = new double[] { endLat, endLon };
 
             var problem = new Problem(pointsArray, startingPoint, colonySize: 50, iterations: 10, endPoint: endPoint);
             var route = problem.FindRoute();
-            List<double[]> routeList = new List<double[]>();
+            
 
-            foreach (var point in route)
-            {
-                var lat = point[0] / multiplier;
-                var lon = point[1] / multiplier;
-
-                routeList.Add(new double[] { lat, lon });
-            }
-
-            var routeArray = routeList.ToArray();
-
-            return View("~/Views/Routes/Route.cshtml", null);
+            return View("~/Views/Routes/Route.cshtml", route);
         }
 
         
