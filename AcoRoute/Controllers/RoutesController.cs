@@ -54,19 +54,19 @@ namespace AcoRoute.Controllers
             long[] startingPoint = new long[] { startLat, startLon };
             long[] endPoint = new long[] { endLat, endLon };
 
-            //var problem = new Problem(pointsArray, startingPoint, colonySize: 50, iterations: 10, endPoint: endPoint);
-            //var route = problem.FindRoute();
-            //List<double[]> routeList = new List<double[]>();
+            var problem = new Problem(pointsArray, startingPoint, colonySize: 50, iterations: 10, endPoint: endPoint);
+            var route = problem.FindRoute();
+            List<double[]> routeList = new List<double[]>();
 
-            //foreach (var point in route)
-            //{
-            //    var lat = point[0] / multiplier;
-            //    var lon = point[1] / multiplier;
+            foreach (var point in route)
+            {
+                var lat = point[0] / multiplier;
+                var lon = point[1] / multiplier;
 
-            //    routeList.Add(new double[] { lat, lon });
-            //}
+                routeList.Add(new double[] { lat, lon });
+            }
 
-            //var routeArray = routeList.ToArray();
+            var routeArray = routeList.ToArray();
 
             return View("~/Views/Routes/Route.cshtml", null);
         }
