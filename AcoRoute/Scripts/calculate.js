@@ -249,7 +249,6 @@ function setOrigin() {
 }
 
 function setEndDestination() {
-    debugger;
     var selectedRow = destinationsTable.rows('.selected').data();
     if (selectedRow.length != 1) {
         showAlert('Error', 'Seleccione una fila')
@@ -292,14 +291,13 @@ function calculateRoute() {
                 endDestinationCoordinates = singleCoordinates;
         }
     }
-    debugger;
+
     var param = {
-        points: destinationsCoordinates,
-        startCoord: originCoordinates,
-        endCoord: endDestinationCoordinates
+        Points: destinationsCoordinates,
+        StartCoord: originCoordinates,
+        EndCoord: endDestinationCoordinates
     }
 
-    console.log();
     $.ajax({
         type: "POST",
         url: "/Routes/CalculateRoute/",

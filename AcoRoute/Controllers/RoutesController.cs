@@ -23,52 +23,54 @@ namespace AcoRoute.Controllers
             
         }
 
+        public class RouteParams
+        {
+            public string[][] Points { get; set; }
+            public string[] StartCoord { get; set; }
+            public string[] EndCoord { get; set; }
+        }
+
         [HttpPost]
         public ActionResult CalculateRoute(RouteParams param)
         {
             var multiplier = 1E7;
 
-            List<int[]> pointsList = new List<int[]>();
+            List<long[]> pointsList = new List<long[]>();
 
-            foreach(var point in param.points)
+            foreach (var point in param.Points)
             {
-                var lat = Math.Truncate(point[0] * multiplier);
-                var lon = Math.Truncate(point[1] * multiplier);
+                var lat = Math.Truncate(Convert.ToDouble(point[0]) * multiplier);
+                var lon = Math.Truncate(Convert.ToDouble(point[1]) * multiplier);
 
-                pointsList.Add(new int[] { (int)lat, (int)lon });
+                pointsList.Add(new long[] {(long)lat, (long)lon });
             }
 
-            int startLat = (int)Math.Truncate(param.startCoord[0] * multiplier);
-            int startLon = (int)Math.Truncate(param.startCoord[1] * multiplier);
-            int endLat = (int)Math.Truncate(param.endCoord[0] * multiplier);
-            int endLon = (int)Math.Truncate(param.endCoord[1] * multiplier);
+            long startLat = (long)Math.Truncate(Convert.ToDouble(param.StartCoord[0]) * multiplier);
+            long startLon = (long)Math.Truncate(Convert.ToDouble(param.StartCoord[1]) * multiplier);
+            long endLat = (long)Math.Truncate(Convert.ToDouble(param.EndCoord[0]) * multiplier);
+            long endLon = (long)Math.Truncate(Convert.ToDouble(param.EndCoord[1]) * multiplier);
 
-            int[][] pointsArray = pointsList.ToArray();
-            int[] startingPoint = new int[] { startLat, startLon };
-            int[] endPoint = new int[] { endLat, endLon };
+            long[][] pointsArray = pointsList.ToArray();
+            long[] startingPoint = new long[] { startLat, startLon };
+            long[] endPoint = new long[] { endLat, endLon };
 
-            var problem = new Problem(pointsArray, startingPoint, colonySize: 50, iterations: 10, endPoint: endPoint);
-            var route = problem.FindRoute();
-            List<double[]> routeList = new List<double[]>();
+            //var problem = new Problem(pointsArray, startingPoint, colonySize: 50, iterations: 10, endPoint: endPoint);
+            //var route = problem.FindRoute();
+            //List<double[]> routeList = new List<double[]>();
 
-            foreach (var point in route)
-            {
-                var lat = point[0] / multiplier;
-                var lon = point[1] / multiplier;
+            //foreach (var point in route)
+            //{
+            //    var lat = point[0] / multiplier;
+            //    var lon = point[1] / multiplier;
 
-                routeList.Add(new double[] { lat, lon });
-            }
+            //    routeList.Add(new double[] { lat, lon });
+            //}
 
-            var routeArray = routeList.ToArray();
+            //var routeArray = routeList.ToArray();
 
-            return View("~/Views/Routes/Route.cshtml", routeArray);
+            return View("~/Views/Routes/Route.cshtml", null);
         }
 
-        public class RouteParams
-        {
-            public double[][] points;
-            public double[] startCoord;
-            public double[] endCoord;
-        }
+        
     }
 }
