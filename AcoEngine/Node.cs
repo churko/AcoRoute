@@ -8,19 +8,19 @@ namespace AcoEngine
         static int nextId;
         public int NodeId { get; private set; }
 
-        readonly int lat;
+        readonly double lat;
 
-        readonly int lng;
+        readonly double lng;
 
-        public Node(int[] coord)
+        public Node(double[] coord)
         {
             this.NodeId = Interlocked.Increment(ref nextId);
             this.lat = coord[0];
             this.lng = coord[1];
         }
 
-        public int Lat => lat;
+        public double Lat => lat;
 
-        public int Lng => lng;
+        public double Lng => lng;
     }
 }
