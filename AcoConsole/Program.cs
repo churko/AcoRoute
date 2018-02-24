@@ -13,13 +13,13 @@ namespace AcoConsole
         static void Main(string[] args)
         {
             System.DateTime startTime;
-            int[][] points = CreatePointsMatrix(50);
+            double[][] points = CreatePointsMatrix(50);
 
             var random = new Random();
 
-            int[] startingPoint = points[0];
+            double[] startingPoint = points[0];
 
-            int[] endPoint = points[1];
+            double[] endPoint = points[1];
 
             var problem = new Problem(points, startingPoint, colonySize: 50, iterations: 10, endPoint: endPoint);
             ConsoleKey key;
@@ -98,7 +98,7 @@ namespace AcoConsole
             } while (key == ConsoleKey.S);
         }
 
-        static int[][] CreatePointsMatrix(int pointCount)
+        static double[][] CreatePointsMatrix(int pointCount)
         {
             //Console.WriteLine("input number of points");
             //int intTemp = Convert.ToInt32(Console.ReadLine());
@@ -134,12 +134,12 @@ namespace AcoConsole
             //    points.Add(coord);
             //}
 
-            var points = new List<int[]> {
-                                            new int[] { 6, 5 },
-                                           new int[] {8, 16 },
-                                           new int[] { 10, 8 },
-                                           new int[] { 14, 25 },
-                                           new int[] { 22, 14 } };
+            var points = new List<double[]> {
+                                            new double[] { -6.21, -5.1234123412 },
+                                           new double[] {-8.1234123, -16.345623122 },
+                                           new double[] { -10.4433229890, -8.12341234111 },
+                                           new double[] { -14.12341234111, -25.9767867890 },
+                                           new double[] { -22.1234123111, -14.12341234444 } };
 
 
             var ret = points.ToArray();

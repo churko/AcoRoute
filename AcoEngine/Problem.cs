@@ -27,8 +27,8 @@ namespace AcoEngine
 
 
         //constructor: initializes the problem parameters
-        public Problem(int[][] points, int[] startingPoint, int colonySize = 30, int nnCount = 5,
-            int iterations = 50, double heuristicsWeight = 2, double qProbability = 0.9, double pheromoneEvaporation = 0.1, int[] endPoint = null)
+        public Problem(double[][] points, double[] startingPoint, int colonySize = 30, int nnCount = 5,
+            int iterations = 50, double heuristicsWeight = 2, double qProbability = 0.9, double pheromoneEvaporation = 0.1, double[] endPoint = null)
         {
             //these should not be necessary since the application will pass the correct dimentions, however I'll leave them as placeholders
             if (!this.ValidatePoints(points))
@@ -80,7 +80,7 @@ namespace AcoEngine
 
         }
 
-        public void SetStartingNode(int[] startingPoint)
+        public void SetStartingNode(double[] startingPoint)
         {
             if (this.nodes.Count() < 1)
             {
@@ -95,7 +95,7 @@ namespace AcoEngine
             }
         }
 
-        public void SetEndNode(int[] endPoint)
+        public void SetEndNode(double[] endPoint)
         {
             if (endPoint != null)
             {
@@ -167,7 +167,7 @@ namespace AcoEngine
         }
 
         //starts the search
-        public int[][] FindRoute()
+        public double[][] FindRoute()
         {
             
             for (var i = 0; i < this.iterations; i++)
@@ -199,13 +199,13 @@ namespace AcoEngine
             return bestRouteArray;
         }
 
-        private int[][] RouteToArray(List<int> route)
+        private double[][] RouteToArray(List<int> route)
         {
-            var latLngList = new List<int[]>();
+            var latLngList = new List<double[]>();
             foreach (var nodeId in route)
             {
                 var node = this.nodes.Find(x => x.NodeId == nodeId);
-                var latLng = new int[2] { node.Lat, node.Lng };
+                var latLng = new double[2] { node.Lat, node.Lng };
                 latLngList.Add(latLng);
             }
 
@@ -314,7 +314,7 @@ namespace AcoEngine
 
         #region Useful but probably unused        
 
-        private bool ValidatePoints(int[] point)
+        private bool ValidatePoints(double[] point)
         {
             if(point.GetLength(0) != 2)
             {
@@ -323,7 +323,7 @@ namespace AcoEngine
             return true;
         }
 
-        private bool ValidatePoints(int[][] points)
+        private bool ValidatePoints(double[][] points)
         {
             foreach(var point in points)
             {
