@@ -205,7 +205,7 @@ namespace AcoEngine
             foreach (var nodeId in route)
             {
                 var node = this.nodes.Find(x => x.NodeId == nodeId);
-                var latLng = new double[2] { node.Lat, node.Lng };
+                var latLng = new double[3] { node.Lat, node.Lng, node.PersonId };
                 latLngList.Add(latLng);
             }
 
