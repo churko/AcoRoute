@@ -54,12 +54,12 @@ namespace AcoConsole
 
                 foreach (var point in points)
                 {
-                    Console.WriteLine("Lat: {0}, Long: {1}", point[0].ToString(), point[1].ToString());
+                    Console.WriteLine("PersonId: {2} - Lat: {0}, Long: {1}", point[0].ToString(), point[1].ToString(), point[2].ToString());
                 }
 
                 Console.WriteLine();
-                Console.WriteLine("Punto Inicial - Lat: {0}, Long: {1}", startingPoint[0].ToString(), startingPoint[1].ToString());
-                Console.WriteLine("Punto Final - Lat: {0}, Long: {1}", endPoint[0].ToString(), endPoint[1].ToString());
+                Console.WriteLine("PersonId: {2} - Punto Inicial - Lat: {0}, Long: {1}", startingPoint[0].ToString(), startingPoint[1].ToString(), startingPoint[2].ToString());
+                Console.WriteLine("PersonId: {2} - Punto Final - Lat: {0}, Long: {1}", endPoint[0].ToString(), endPoint[1].ToString(), endPoint[2].ToString());
 
                 Console.WriteLine();
                 Console.WriteLine();
@@ -67,7 +67,7 @@ namespace AcoConsole
                 for (var i = 0; i < finalRoute.Length; i++)
                 {
                     var point = finalRoute[i];
-                    Console.WriteLine("Punto {0} - Lat: {1}, Long: {2}", i, point[0].ToString(), point[1].ToString());
+                    Console.WriteLine("Punto {0} - PersonId: {3} - Lat: {1}, Long: {2}", i, point[0].ToString(), point[1].ToString(), point[2].ToString());
                 }
 
                 var endTime = System.DateTime.Now;
@@ -135,11 +135,11 @@ namespace AcoConsole
             //}
 
             var points = new List<double[]> {
-                                            new double[] { -6.21, -5.1234123412 },
-                                           new double[] {-8.1234123, -16.345623122 },
-                                           new double[] { -10.4433229890, -8.12341234111 },
-                                           new double[] { -14.12341234111, -25.9767867890 },
-                                           new double[] { -22.1234123111, -14.12341234444 } };
+                                            new double[] { -6.21, -5.1234123412,1 },
+                                           new double[] {-8.1234123, -16.345623122,2 },
+                                           new double[] { -10.4433229890, -8.12341234111,3 },
+                                           new double[] { -14.12341234111, -25.9767867890,4 },
+                                           new double[] { -22.1234123111, -14.12341234444,5 } };
 
 
             var ret = points.ToArray();
