@@ -252,17 +252,20 @@ namespace AcoEngine
                 RouteDistance = bestAnt.RouteDistance
             };
 
-            for(var i = 0; i < this.iterations; i++)
+            if (iterationBest.Route.Count > 4)
             {
-                var children = FindChildren(iterationBest);
-                var bestChild = children.OrderBy(x => x.RouteDistance).FirstOrDefault();
-                if (bestChild.RouteDistance > iterationBest.RouteDistance)
+                for (var i = 0; i < this.iterations; i++)
                 {
-                    break;
-                }
+                    var children = FindChildren(iterationBest);
+                    var bestChild = children.OrderBy(x => x.RouteDistance).FirstOrDefault();
+                    if (bestChild.RouteDistance > iterationBest.RouteDistance)
+                    {
+                        break;
+                    }
 
-                iterationBest = bestChild;
-            }     
+                    iterationBest = bestChild;
+                }
+            }
 
             return iterationBest;
         }

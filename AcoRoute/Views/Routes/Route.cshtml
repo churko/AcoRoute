@@ -1,4 +1,4 @@
-﻿@model double[][]
+﻿@*@model double[][]*@
 
 @{
     ViewBag.Title = "Route";
@@ -13,9 +13,9 @@
     <script type="text/javascript">
         $(document).ready(function () { createMap(15, createPoint(-31.2528803, -61.4919196), false) });
     </script>
-    <script type="text/javascript">
+    @*<script type="text/javascript">
         $(document).ready(function () { drawRoute(@JavaScriptConvert.SerializeObject(Model)); });
-    </script>
+    </script>*@
 }
 @Scripts.Render("~/Scripts/maps.js")
 @Scripts.Render("~/Scripts/calculate.js")
