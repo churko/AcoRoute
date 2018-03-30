@@ -63,10 +63,12 @@ namespace AcoRoute.Controllers
 
             foreach (double[] node in route)
             {
-                Result res = new Result();
-                res.Latitude = node[0];
-                res.Longitude = node[1];
-                res.PersonId = (int)node[2];
+                Result res = new Result
+                {
+                    Latitude = node[0],
+                    Longitude = node[1],
+                    PersonId = (int)node[2]
+                };
                 routeResult.Add(res);
             }
 
@@ -75,7 +77,8 @@ namespace AcoRoute.Controllers
 
         public ActionResult DrawRoute(List<Result> result)
         {
-            return View("~/Views/Home/Index.cshtml");
+            //return View("~/Views/Home/Index.cshtml");
+            return View("~/Views/Routes/RouteResult.cshtml", result);
         }
 
     }
