@@ -41,25 +41,42 @@ namespace AcoRoute.Controllers
                 
                 var lat = double.Parse(point[0], CultureInfo.InvariantCulture);
                 var lon = double.Parse(point[1], CultureInfo.InvariantCulture);
+                var personId = double.Parse(point[2], CultureInfo.InvariantCulture);
 
-                pointsList.Add(new double[] {lat, lon });
+                pointsList.Add(new double[] {lat, lon, personId });
             }
 
             var startLat = double.Parse(param.StartCoord[0], CultureInfo.InvariantCulture);
             var startLon = double.Parse(param.StartCoord[1], CultureInfo.InvariantCulture);
+            var startPersonId = double.Parse(param.StartCoord[2], CultureInfo.InvariantCulture);
             var endLat = double.Parse(param.EndCoord[0], CultureInfo.InvariantCulture);
             var endLon = double.Parse(param.EndCoord[1], CultureInfo.InvariantCulture);
+            var endPersonId = double.Parse(param.EndCoord[2], CultureInfo.InvariantCulture);
 
             double[][] pointsArray = pointsList.ToArray();
-            double[] startingPoint = new double[] { startLat, startLon };
-            double[] endPoint = new double[] { endLat, endLon };
+            double[] startingPoint = new double[] { startLat, startLon, startPersonId };
+            double[] endPoint = new double[] { endLat, endLon, endPersonId };
 
             var problem = new Problem(pointsArray, startingPoint, colonySize: 50, iterations: 10, endPoint: endPoint);
             var route = problem.FindRoute();
+            List<Result> routeResult = new List<Result>();
 
-            return View("~/Views/Routes/Route.cshtml", route);
+            foreach (double[] node in route)
+            {
+                Result res = new Result();
+                res.Latitude = node[0];
+                res.Longitude = node[1];
+                res.PersonId = (int)node[2];
+                routeResult.Add(res);
+            }
+
+            return RedirectToAction("DrawRoute", routeResult);
         }
 
-        
+        public ActionResult DrawRoute(List<Result> result)
+        {
+            return View("~/Views/Home/Index.cshtml");
+        }
+
     }
 }

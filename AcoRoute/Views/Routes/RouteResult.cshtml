@@ -1,0 +1,30 @@
+﻿@model IEnumerable<AcoRoute.Models.Result>
+
+@{
+    ViewBag.Title = "Result";
+}
+
+<h2>Result</h2>
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal container-fluid">
+        <div class="col-sm-7">
+        
+
+        </div>
+
+
+        <div class="col-sm-5">
+            <div id="map" class="form-group" style="width: 600px; height: 500px"></div>
+            <script type="text/javascript">
+                $(document).ready(function () { createMap(15, createPoint(-31.2528803, -61.4919196), false) });
+            </script>
+        </div>
+    </div>
+
+}
+@Scripts.Render("~/Scripts/maps.js")
+@Scripts.Render("~/Scripts/calculate.js")

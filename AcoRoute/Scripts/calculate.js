@@ -276,7 +276,8 @@ function calculateRoute() {
     var endDestinationCoordinates = [];
     var destinations = destinationsTable.rows().data();
     for (var i = 0; i < destinations.length; i++) {
-        var singleCoordinates = [destinations[i][6], destinations[i][7]];
+        debugger;
+        var singleCoordinates = [destinations[i][6], destinations[i][7], destinations[i][2]];
         destinationsCoordinates[i] = singleCoordinates;
 
         switch (destinations[i][0]) {
