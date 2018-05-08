@@ -4,8 +4,9 @@ var map;
 var geocoder;
 var addressMarker;
 var routeMarkers = [];
+var directionsService = new google.maps.DirectionsService();
 
-function createMap(initialZoom, initialPosition, addMarker = false) {
+function createMap(initialZoom, initialPosition, addMarker = false, mapId ="map") {
 
 
     geocoder = new google.maps.Geocoder();
@@ -22,7 +23,7 @@ function createMap(initialZoom, initialPosition, addMarker = false) {
         mapTypeId: google.maps.MapTypeId.ROADMAP
     };
 
-    map = new google.maps.Map(document.getElementById("map"), mapOptions);
+    map = new google.maps.Map(document.getElementById(mapId), mapOptions);
 
     if (addMarker) {
         addAddressMarker(initialPosition);

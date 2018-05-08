@@ -276,7 +276,6 @@ function calculateRoute() {
     var endDestinationCoordinates = [];
     var destinations = destinationsTable.rows().data();
     for (var i = 0; i < destinations.length; i++) {
-        debugger;
         var singleCoordinates = [destinations[i][6], destinations[i][7], destinations[i][2]];
         destinationsCoordinates[i] = singleCoordinates;
 
@@ -304,7 +303,28 @@ function calculateRoute() {
         url: "/Routes/CalculateRoute/",
         data: param,
         dataType: "json"
-    });
+    }).done((response) => { 
+        debugger;
+        var minLat = response.routeResult[0].Latitude;
+        var maxLat = response.routeResult[0].Latitude;
+        var minLong = response.routeResult[0].Longitude;
+        var maxLong = response.routeResult[0].Longitude;        
+
+        for (var i = 1; i < response.routeResult.length; i++) {
+            minLat = response.routeResult[i].Latitude < minLat ? response.routeResult[i].Latitude : minLat;
+            maxLat = response.routeResult[i].Latitude > maxLat ? response.routeResult[i].Latitude : maxLat;
+            minLong = response.routeResult[i].Longitude < minLong ? response.routeResult[i].Longitude : minLong;
+            maxLong = response.routeResult[i].Longitude > maxLong ? response.routeResult[i].Longitude : maxLong;
+        }
+
+        var centerLat = (minLat + maxLat) / 2;
+        var centerLong = (minLong + maxLong) / 2;
+
+        $(document).ready(function () { createMap(15, createPoint(centerLat, centerLong), false, "map2") });
+        $("#divCalculation").addClass("hidden");
+        $("#divRoute").removeClass("hidden");
+
+        });
 }
 
 function enableDisableCalculate() {

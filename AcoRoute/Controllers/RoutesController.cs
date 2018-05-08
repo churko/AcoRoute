@@ -72,7 +72,7 @@ namespace AcoRoute.Controllers
                 routeResult.Add(res);
             }
 
-            return RedirectToAction("DrawRoute", routeResult);
+            return Json(new { result = "Redirect", url = Url.Action("DrawRoute", "Routes"), routeResult = routeResult });
         }
 
         public ActionResult DrawRoute(List<Result> result)

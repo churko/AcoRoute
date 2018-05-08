@@ -4,59 +4,68 @@
     ViewBag.Title = "Calculate";
 }
 
-<h2>Calculate</h2>
+
 
 @using (Html.BeginForm())
-{       
+{
     @Html.AntiForgeryToken()
 
-    <div class="form-horizontal container-fluid">
-        <div class="col-sm-7">
-            <script type="text/javascript">
+<div class="form-horizontal container-fluid" id="divCalculation">
+    <h2>Calculate</h2>
+    <br />
+    <div class="col-sm-7">
+        <script type="text/javascript">
                 $(document).ready(function () { initializeTables(@JavaScriptConvert.SerializeObject(Model)); });
-            </script>
-            <div>
-                <table id="peopleTable" class="display"></table>
-                <br />
-                <br />
-            </div>
-            <div form-horizontal container-fluid>
-                <div class="col-sm-2"></div>
-                <div class="col-sm-4">
-                    <button class="btn btn-primary" type="button" onclick="addDestinations()"><i class="fa fa-caret-down"></i> Agregar</button>
-                </div>
-                <div class="col-sm-4">
-                    <button class="btn btn-primary" type="button" onclick="removeDestinations()"><i class="fa fa-caret-up"></i> Remover</button>
-                </div>
-            </div>
-            <div>
-                <br />
-                <br />
-                <br />
-                <table id="destinationsTable" class="display"></table>
-            </div>
+        </script>
+        <div>
+            <table id="peopleTable" class="display"></table>
             <br />
-            <div form-horizontal container-fluid>
-                <div class="col-sm-9">
-                    <button id="btnSetOrigin" class="btn btn-warning disabled" type="button" onclick="setOrigin()"><i class="fa fa-flag"></i> Setear origen</button>
-                    <button id="btnSetDestination" class="btn btn-success disabled" type="button" onclick="setEndDestination()"><i class="fa fa-flag-checkered"></i> Setear destino</button>
-                </div>
-                <div class="col-sm-3">
-                    <button id="btnCalculate" class="btn btn-primary disabled" type="button" onclick="calculateRoute()"><i class="fa fa-map-o"></i> Calcular</button>
-                </div>
-            </div>
-            
+            <br />
         </div>
-        
-        
-        <div class="col-sm-5">
-            <div id="map" class="form-group" style="width: 600px; height: 500px"></div>
-            <script type="text/javascript">
-                $(document).ready(function () { createMap(15, createPoint(-31.2528803, -61.4919196), false) });
-            </script>
-        </div> 
+        <div form-horizontal container-fluid>
+            <div class="col-sm-2"></div>
+            <div class="col-sm-4">
+                <button class="btn btn-primary" type="button" onclick="addDestinations()"><i class="fa fa-caret-down"></i> Agregar</button>
+            </div>
+            <div class="col-sm-4">
+                <button class="btn btn-primary" type="button" onclick="removeDestinations()"><i class="fa fa-caret-up"></i> Remover</button>
+            </div>
+        </div>
+        <div>
+            <br />
+            <br />
+            <br />
+            <table id="destinationsTable" class="display"></table>
+        </div>
+        <br />
+        <div form-horizontal container-fluid>
+            <div class="col-sm-9">
+                <button id="btnSetOrigin" class="btn btn-warning disabled" type="button" onclick="setOrigin()"><i class="fa fa-flag"></i> Setear origen</button>
+                <button id="btnSetDestination" class="btn btn-success disabled" type="button" onclick="setEndDestination()"><i class="fa fa-flag-checkered"></i> Setear destino</button>
+            </div>
+            <div class="col-sm-3">
+                <button id="btnCalculate" class="btn btn-primary disabled" type="button" onclick="calculateRoute()"><i class="fa fa-map-o"></i> Calcular</button>
+            </div>
+        </div>
+
     </div>
-   
+
+
+    <div class="col-sm-5">
+        <div id="map" class="form-group" style="width: 600px; height: 500px"></div>
+        <script type="text/javascript">
+            $(document).ready(function () { createMap(15, createPoint(-31.2528803, -61.4919196), false) });
+        </script>
+    </div>
+</div>
+
+<div class="form-horizontal container-fluid hidden" id="divRoute">
+    <h2>Result</h2>
+    <br />
+    <div id="map2" class="form-group" style="width: 1200px; height: 600px"></div>
+</div>
+
+
 }
 @Scripts.Render("~/Scripts/maps.js")
 @Scripts.Render("~/Scripts/calculate.js")
