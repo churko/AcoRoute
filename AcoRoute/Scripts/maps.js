@@ -5,6 +5,11 @@ var geocoder;
 var addressMarker;
 var routeMarkers = [];
 var directionsService = new google.maps.DirectionsService();
+var rendererOptions = {
+    draggable: true
+};
+
+var directionsDisplay = new google.maps.DirectionsRenderer(rendererOptions);
 
 function createMap(initialZoom, initialPosition, addMarker = false, mapId ="map") {
 
