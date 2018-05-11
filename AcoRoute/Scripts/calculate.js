@@ -303,7 +303,6 @@ function calculateRoute() {
         data: param,
         dataType: "json"
     }).done((response) => {
-        debugger;
         var minLat = response.routeResult[0].Latitude;
         var maxLat = response.routeResult[0].Latitude;
         var minLong = response.routeResult[0].Longitude;
@@ -326,7 +325,6 @@ function calculateRoute() {
         }
 
         wayPoints.pop();
-
         var destination = {
             lat: response.routeResult[response.routeResult.length - 1].Latitude,
             lng: response.routeResult[response.routeResult.length - 1].Longitude
@@ -340,11 +338,10 @@ function calculateRoute() {
             destination: destination,
             travelMode: 'DRIVING',
             waypoints: wayPoints,
-            provideRouteAlternatives: true
+            provideRouteAlternatives: false
         }
 
         $(document).ready(function () {
-            debugger;
             createMap(15, createPoint(centerLat, centerLong), false, "map2")
             directionsDisplay.setMap(map);
             $("#divCalculation").addClass("hidden");
