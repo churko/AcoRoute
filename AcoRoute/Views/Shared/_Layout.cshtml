@@ -26,18 +26,18 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>                  
-                <a href="/Home" class="navbar-brand"> <i class="fa fa-road fa-lg"></i> AcoRoute</a>                
+                <a href="/Routes/Index" class="navbar-brand"> <i class="fa fa-road fa-lg"></i> AcoRoute</a>                
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li><a href="/Home"><i class="fa fa-home"></i> Home</a></li>
+                    @*<li><a href="/Home"><i class="fa fa-home"></i> Inicio</a></li>*@
                     @*<li><a href="/Home/About"><i class="fa fa-question"></i> About</a></li>  
                     <li><a href="/Home/Contact"><i class="fa fa-envelope"></i> Contact</a></li>*@
-                    <li><a href="/Persons/Index"><i class="fa fa-group"></i> People</a></li>
-                    <li><a href="/Vehicles/Index"><i class="fa fa-bus"></i> Vehicles</a></li>
-                    <li><a href="/Routes/Index"><i class="fa fa-flask"></i> test</a></li>
+                    <li><a href="/Persons/Index"><i class="fa fa-map-marker"></i> Paradas</a></li>
+                    @*<li><a href="/Vehicles/Index"><i class="fa fa-bus"></i> Vehicles</a></li>*@
+                    <li><a href="/Routes/Index"><i class="fa fa-gears"></i> Calcular Ruta</a></li>
                 </ul>
-                @Html.Partial("_LoginPartial")
+                @*@Html.Partial("_LoginPartial")*@
             </div>
         </div>
     </div>
@@ -45,7 +45,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+            <p>&copy; @DateTime.Now.Year - Trabajo Final Ingeniería en Informática - Ezequiel Kuschnir</p>
         </footer>
     </div>
 
