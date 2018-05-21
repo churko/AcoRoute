@@ -5,3 +5,30 @@
 .text-destination {
     color: #00C851 !important;
 }
+
+.iframe-container {
+    position: relative;
+    width: 100%;  
+}
+
+.lgPad {
+    padding-bottom: 80%;
+}
+
+.smPad {
+    padding-bottom: 50%;
+}
+
+
+.iframe-container > * {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}

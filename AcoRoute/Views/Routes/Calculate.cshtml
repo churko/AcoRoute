@@ -13,7 +13,7 @@
 <div class="form-horizontal container-fluid" id="divCalculation">
     <h2><i class="fa fa-gears"></i> Calcular Ruta</h2>
     <br />
-    <div class="col-sm-7">
+    <div class="col-sm-6">
         <script type="text/javascript">
                 $(document).ready(function () { initializeTables(@JavaScriptConvert.SerializeObject(Model)); });
         </script>
@@ -51,8 +51,8 @@
     </div>
 
 
-    <div class="col-sm-5">
-        <div id="map" class="form-group" style="width: 600px; height: 500px"></div>
+    <div class="col-sm-6">
+        <div id="map" class="form-group iframe-container lgPad"></div>
         <script type="text/javascript">
             $(document).ready(function () { createMap(15, createPoint(-31.2528803, -61.4919196), false) });
         </script>
@@ -60,9 +60,13 @@
 </div>
 
 <div class="form-horizontal container-fluid hidden" id="divRoute">
-    <h2>Result</h2>
+    <h2><i class="fa fa-gears"></i> Ruta Calculada</h2>
     <br />
-    <div id="map2" class="form-group" style="width: 1200px; height: 600px"></div>
+    <div id="map2" class="form-group iframe-container smPad"></div>
+    <div>
+        <p id="instructions"></p>
+    </div>
+
 </div>
 
 

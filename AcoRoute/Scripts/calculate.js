@@ -348,7 +348,17 @@ function calculateRoute() {
             $("#divRoute").removeClass("hidden");
             directionsService.route(directionsRequest, (result, status) => {
                 if (status == 'OK') {
-                    directionsDisplay.setDirections(result);
+                    var instructions = '';
+                    for (var i = 0; i < result.routes[0].legs.length; i++) {
+                        var leg = result.routes[0].legs[i];
+                        for (var j = 0; j < leg.steps.length; j++) {
+                            var step = leg.steps[j];
+
+                            instructions += "<li>" + step.instructions + "<br />";
+                        }
+                    }
+                    $("#instructions").html(instructions);
+                    directionsDisplay.setDirections(result);                    
                 }
             });
         });
