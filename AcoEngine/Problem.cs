@@ -27,8 +27,8 @@ namespace AcoEngine
 
 
         //constructor: initializes the problem parameters
-        public Problem(double[][] points, double[] startingPoint, int colonySize = 30, int nnCount = 5,
-            int iterations = 50, double heuristicsWeight = 2, double qProbability = 0.9, double pheromoneEvaporation = 0.1, double[] endPoint = null)
+        public Problem(double[][] points, double[] startingPoint, double[] endPoint, int colonySize = 10, int nnCount = 5,
+            int iterations = 50, double heuristicsWeight = 2, double qProbability = 0.9, double pheromoneEvaporation = 0.1)
         {
             //these should not be necessary since the application will pass the correct dimentions, however I'll leave them as placeholders
             if (!this.ValidatePoints(points))
